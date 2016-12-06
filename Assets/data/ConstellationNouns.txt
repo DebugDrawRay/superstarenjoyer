@@ -1,0 +1,88 @@
+Sea Captain
+General
+Captain
+Leader
+Peasant
+Worker
+Duke
+King
+Queen
+Jester
+Prince
+Princess
+Professor
+Intern
+Understudy
+Tech Lead
+CEO
+Champion
+President
+Astrologer
+Warrior
+Inventor
+Tinkerer
+Visionary
+Maverick
+Coach
+Athlete
+Mad Scientist
+Dean
+Winner
+Boss
+Lead
+Wunderkind
+Participant
+Volunteer
+Prodigy
+Shift Lead
+Pirate
+Commodore
+Bouncer
+Guard
+Protector
+Guardian
+Chef
+Prime Minister
+Friend
+Companion
+Buddy
+Pal
+Punk
+Journalist
+Explorer
+Best Boy
+Ringleader
+Ring Bearer
+Emperor
+Socialite
+Recluse
+Hermit
+Lord
+Deity
+Lordship
+Air Marshal
+Advisor
+Bishop
+Chairman
+Chancellor
+Consort
+Count
+Earl
+Evangelist
+Fellow
+Fella
+Grand Inquisitor
+Charlatan
+Imperator
+Impostor
+Impersonator
+King of Arms
+Scholar
+Magister
+Pharaoh
+Patriarch
+Lecturer
+Reverend
+Spy
+Attendant
+Chairperson
