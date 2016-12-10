@@ -123,6 +123,7 @@ MonoBehaviour:
   frozen: 0
   starMan: {fileID: 114000012969979918}
   spawnComet: 1
+  PauseScreen: {fileID: 0}
 --- !u!114 &114000010813693184
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -144,6 +145,7 @@ MonoBehaviour:
   StarLinkParent: {fileID: 0}
   starHitCometParticle: {fileID: 1000013988914792, guid: 7a02555c06b70004fb2e2e2a7fa0e2c3,
     type: 2}
+  scorePopup: {fileID: 1000010131516814, guid: ff07c0391a969f84d8fcc521da152bea, type: 2}
 --- !u!114 &114000011350973540
 MonoBehaviour:
   m_ObjectHideFlags: 1

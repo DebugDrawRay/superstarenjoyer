@@ -59,6 +59,8 @@ public class GameController : MonoBehaviour
     public delegate void CollisionEvent(float strength, float speed);
     public static event CollisionEvent CometCollisionEvent;
 
+
+
     public static void TriggerCometCollision(float strength, float speed)
     {
         if(CometCollisionEvent != null)

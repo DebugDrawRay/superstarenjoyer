@@ -35,6 +35,9 @@ public class ConstellationManager : MonoBehaviour
 
     public GameObject starHitCometParticle;
 
+    //added by Logan
+    public GameObject scorePopup;
+
     void Awake()
     {
         Instance = this;
@@ -43,6 +46,8 @@ public class ConstellationManager : MonoBehaviour
         LastStarId = null;
 
         ConstellationNameSetup();
+
+        print(gameObject.name);
     }
 
     void Start()
@@ -165,7 +170,20 @@ public class ConstellationManager : MonoBehaviour
             int score = GameData.scorePerStar;
             float totalConnections = 1 + (GameData.scoreConnectionMulti * constellation.Links.Count);
             float totalStars = 1 + (GameData.constSizeMulti * constellation.Stars.Count);
-            GameController.TriggerAddScore((int)((score * totalConnections) * totalStars));
+            int myScore = (int)((score * totalConnections) * totalStars);//calculate the score
+            GameController.TriggerAddScore(myScore);//send it
+
+            Vector3 myPos = new Vector3(0, 0, 0);
+
+            /*for (int b = 0; b < constellation.Stars.Count; b++)
+            {
+                myPos = new Vector3(myPos.x - constellation.Stars[b].Position.x, myPos.y - constellation.Stars[b].Position.y, myPos.z - constellation.Stars[b].Position.z);   
+            }*/
+
+            //added by Logan
+            GameObject a = Instantiate(scorePopup, myPos, Quaternion.identity) as GameObject;//spawn score text and position it in the middle of the constellation
+            a.GetComponent<TextMesh>().text = (myScore).ToString();//make it the correct score amount
+
             UiController.TriggerScoreData(constellation.Stars.Count, constellation.Links.Count, score, constellationName);
 
             Stars.Clear();
@@ -182,6 +200,7 @@ public class ConstellationManager : MonoBehaviour
             AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationComplete);
             AudioController.Instance.PlayAtEnd(AudioController.Instance.effectBus[(int)SoundBank.SoundEffects.ConstellationComplete], SoundBank.Instance.Request(SoundBank.SoundEffects.ConstellationSent), false);
             //StartCoroutine(ConstellationFlyAway(constellation));
+
             return true;
         }
         else
