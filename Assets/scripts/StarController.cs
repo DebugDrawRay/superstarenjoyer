@@ -30,6 +30,8 @@ public class StarController : MonoBehaviour
 	protected Color startSpecularColor;
     public Animator theAnimator;
 
+    public bool hasBeenTouched;
+
 	void Awake()
 	{
 		starData = new GameData.Star(this);

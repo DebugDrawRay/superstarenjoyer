@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
 	[Header("Stars")]
 	public LineRenderer line;
 
+    public int starsInCurrentConstellation;
 
 	void Awake()
 	{
@@ -117,6 +118,7 @@ public class PlayerController : MonoBehaviour
                 isStar.FadeOutStar();
                 ChangeColor(GameData.StarType.None);
                 lastStar = null;
+                starsInCurrentConstellation = 0;
             }
             else
             {
@@ -131,7 +133,26 @@ public class PlayerController : MonoBehaviour
                 isStar.starData.Position = isStar.transform.position;
                 ChangeColor(isStar.theStarType);
                 constManager.AddStar(isStar.starData);
-                AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood);
+
+                if (hit.gameObject.GetComponent<StarController>().hasBeenTouched == false)
+                {
+                    starsInCurrentConstellation += 1;
+                    hit.gameObject.GetComponent<StarController>().hasBeenTouched = true;
+                }
+
+
+                //AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood);
+
+                if (starsInCurrentConstellation == 1)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood01);
+                }
+                else if (starsInCurrentConstellation == 2)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood02);
+                }
+
+
 
                 isStar.DoBoing();
                 isStar.DoGotHitAnim();

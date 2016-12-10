@@ -18,7 +18,22 @@ public class SoundBank : MonoBehaviour
         ConstellationHit,
         ConstellationSent,
         ConstellationComplete,
-        ConstellationBroken
+        ConstellationBroken,
+        StarGood00,
+        StarGood01,
+        StarGood02,
+        StarGood03,
+        StarGood04,
+        StarGood05,
+        StarGood06,
+        StarGood07,
+        StarGood08,
+        StarGood09,
+        StarGood10,
+        StarGood11,
+        StarGood12,
+        StarGood13,
+        StarGood14,
     }
     public AudioClip[] SoundEffectClips;
 
