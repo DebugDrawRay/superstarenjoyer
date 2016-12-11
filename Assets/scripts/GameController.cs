@@ -53,6 +53,7 @@ public class GameController : MonoBehaviour
 
 	[Header("Pause Screen")]
 	public GameObject PauseScreen;
+	protected State PrePauseState;
 
     public PlayerActions controller;
     //Events
@@ -104,17 +105,29 @@ public class GameController : MonoBehaviour
 
 	 public void Pause()
 	{
-		if (PauseScreen.activeInHierarchy)
+		if (currentState == State.Pause)
+		{
 			UnPause();
+		}
 		else
 		{
-			Time.timeScale = 0;
-			PauseScreen.SetActive(true);
+			DoPause();
 		}
+	}
+
+	public void DoPause()
+	{
+		PrePauseState = currentState;
+		currentState = State.Pause;
+
+		Time.timeScale = 0;
+		PauseScreen.SetActive(true);
 	}
 
 	public void UnPause()
 	{
+		currentState = PrePauseState;
+
 		Time.timeScale = 1;
 		PauseScreen.SetActive(false);
 	}
@@ -181,7 +194,7 @@ public class GameController : MonoBehaviour
                 break;
             case State.Start:
                 UpdateUi();
-                UiController.TriggerVelocityEvent(GameData.cometAcelerationLevels[currentAccelerationLevel] * GameData.speedScalar);
+                UiController.TriggerVelocityEvent(GameData.cometAccelerationBase);
                 AudioController.Instance.StartMusic();
                 StartCoroutine(StartSequence());
                 currentState = State.Transition;
@@ -211,7 +224,7 @@ public class GameController : MonoBehaviour
 		if (!hit)
 		{
 			float modifier = cometBoostTimer >= 0 ? GameData.cometBoostMultiplier : 1;
-			currentDistance = Mathf.MoveTowards(currentDistance, GameData.cometDest, modifier * GameData.cometAcelerationLevels[currentAccelerationLevel] * Time.deltaTime);
+			currentDistance = Mathf.MoveTowards(currentDistance, GameData.cometDest, modifier * (GameData.cometAccelerationBase + (GameData.cometAccelerationIncrease * currentAccelerationLevel)) * Time.deltaTime);
 		}
 		cometRigid.transform.position = new Vector2(0, currentDistance);
 
@@ -240,20 +253,18 @@ public class GameController : MonoBehaviour
 
 	void UpdateLevel()
 	{
-		if (currentAccelerationLevel < GameData.cometAcelerationLevels.Length - 1)
+		if (levelTimer <= 0)
 		{
-			if (levelTimer <= 0)
-			{
-				levelTimer = GameData.levelTime;
-				currentAccelerationLevel++;
-				starMan.spawnLevel++;
-				Debug.Log("NEW LEVEL: " + currentAccelerationLevel);
-                UiController.TriggerVelocityEvent(GameData.cometAcelerationLevels[currentAccelerationLevel]);
-            }
-            else
-			{
-				levelTimer -= Time.deltaTime;
-			}
+			levelTimer = GameData.levelTime;
+			currentAccelerationLevel++;
+			
+			starMan.IncreaseSpawnLevel();
+			Debug.Log("NEW LEVEL: " + currentAccelerationLevel);
+			UiController.TriggerVelocityEvent(GameData.cometAccelerationBase + (GameData.cometAccelerationIncrease * currentAccelerationLevel));
+		}
+		else
+		{
+			levelTimer -= Time.deltaTime;
 		}
 	}
 

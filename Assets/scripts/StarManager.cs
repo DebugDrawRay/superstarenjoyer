@@ -9,7 +9,7 @@ public class StarManager : MonoBehaviour
     public GameObject[] StarsToSpawn;
 
     private float SpawnTimer;
-	 public int spawnLevel = 0;
+	 protected int spawnLevel = 0;
 
     public float starScale;
 
@@ -37,6 +37,14 @@ public class StarManager : MonoBehaviour
         {
             SpawnObject();
             SpawnTimer = Random.Range(GameData.starSpawnTimers[spawnLevel].x, GameData.starSpawnTimers[spawnLevel].y);
+		}
+	}
+
+	public void IncreaseSpawnLevel()
+	{
+		if (spawnLevel < GameData.starSpawnTimers.Length - 1)
+		{
+			spawnLevel++;
 		}
 	}
 

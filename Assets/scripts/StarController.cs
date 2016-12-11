@@ -28,6 +28,8 @@ public class StarController : MonoBehaviour
 	protected Color startColor;
 	protected Color startEmissionColor;
 	protected Color startSpecularColor;
+	protected Vector3 initialScale;
+
     public Animator theAnimator;
 
 	void Awake()
@@ -40,7 +42,7 @@ public class StarController : MonoBehaviour
 		startEmissionColor = starMaterial.GetColor("_EmissionColor");
 		startSpecularColor = starMaterial.GetColor("_SpecColor");
 		properties = new MaterialPropertyBlock();
-
+		initialScale = transform.localScale;
 		
 		starMaterial.SetFloat("_Mode", 3f);
 		starMaterial.EnableKeyword("_ALPHAPREMULTIPLY_ON");
@@ -123,6 +125,7 @@ public class StarController : MonoBehaviour
 		properties.SetColor("_SpecColor", startSpecularColor);
 		properties.SetColor("_EmissionColor", startEmissionColor);
 		starRenderer.SetPropertyBlock(properties);
+		transform.localScale = initialScale;
 	}
 
 	public void UpdateLayerToSendStar()
