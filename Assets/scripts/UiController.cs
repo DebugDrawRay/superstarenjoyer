@@ -35,7 +35,16 @@ public class UiController : MonoBehaviour
         }
     }
 
-    public static Message<float> VelocityEvent;
+	public static Message<bool> PauseScreenEvent;
+	public static void TriggerPauseScreen(bool display)
+	{
+		if (PauseScreenEvent != null)
+		{
+			PauseScreenEvent(display);
+		}
+	}
+
+	public static Message<float> VelocityEvent;
 
     public static void TriggerVelocityEvent(float velocity)
     {
@@ -93,10 +102,15 @@ public class UiController : MonoBehaviour
 	protected IEnumerator ConstellationFadeIn;
 	protected IEnumerator ConstellationFadeOut;
 
-    public GameObject killScreen;
     private Tween currentTween;
 
-    void Awake()
+	[Header("Pause/Kill Screen")]
+	public GameObject killScreen;
+	public GameObject pauseScreen;
+	public Button killScreenDefaultButton;
+	public Button pauseScreenDefaultButton;
+
+	void Awake()
     {
         AssignEvents();
     }
@@ -108,6 +122,7 @@ public class UiController : MonoBehaviour
         DistanceEvent += distanceMeter.ChangeDistance;
         ScoreDataEvent += AddToScoreFeed;
         KillScreenEvent += DisplayKillScreen;
+		PauseScreenEvent += DisplayPauseScreen;
         VelocityEvent += DisplayVelocity;
         ConstellationEvent += distanceMeter.DisplayConstellation;
         ConstellationFadeEvent += FadeInConstellation;
@@ -121,6 +136,7 @@ public class UiController : MonoBehaviour
         DistanceEvent -= distanceMeter.ChangeDistance;
         ScoreDataEvent -= AddToScoreFeed;
         KillScreenEvent -= DisplayKillScreen;
+		PauseScreenEvent -= DisplayPauseScreen;
         VelocityEvent -= DisplayVelocity;
         ConstellationEvent -= distanceMeter.DisplayConstellation;
         ConstellationFadeEvent -= FadeInConstellation;
@@ -157,7 +173,22 @@ public class UiController : MonoBehaviour
     void DisplayKillScreen(string message)
     {
         killScreen.SetActive(true);
+		killScreenDefaultButton.Select();
     }
+
+	protected void DisplayPauseScreen(bool display)
+	{
+		if (display)
+		{
+			//UnPause
+			pauseScreen.SetActive(true);
+			pauseScreenDefaultButton.Select();
+		}
+		else
+		{
+			pauseScreen.SetActive(false);
+		}
+	}
 
 	void FadeInConstellation(string info)
 	{

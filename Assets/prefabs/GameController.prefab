@@ -124,6 +124,8 @@ MonoBehaviour:
   starMan: {fileID: 114000012969979918}
   spawnComet: 1
   PauseScreen: {fileID: 0}
+  PauseReturnButton: {fileID: 0}
+  KillScreenReplayButton: {fileID: 0}
 --- !u!114 &114000010813693184
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -230,5 +232,4 @@ MonoBehaviour:
   - {fileID: 1000013448462480, guid: c66a85e14111e9c42b1df12bc1d10d83, type: 2}
   - {fileID: 1000013361512614, guid: e84f55e44076051459578d604b5fdeac, type: 2}
   - {fileID: 1000013985736620, guid: f8ccebe940acaa94d980aff2bb0c558f, type: 2}
-  spawnLevel: 0
   starScale: 0.65

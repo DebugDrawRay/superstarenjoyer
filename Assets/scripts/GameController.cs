@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using DG.Tweening;
+
 public class GameController : MonoBehaviour
 {
     public enum State
@@ -19,6 +22,7 @@ public class GameController : MonoBehaviour
     [Header("Player")]
     public GameObject player;
     private GameObject currentPlayer;
+	protected PlayerController currentPlayerController;
     public Transform playerSpawn;
 
     [Header("Comet Properties")]
@@ -50,9 +54,6 @@ public class GameController : MonoBehaviour
 
     [Header("Debug")]
     public bool spawnComet;
-
-	[Header("Pause Screen")]
-	public GameObject PauseScreen;
 	protected State PrePauseState;
 
     public PlayerActions controller;
@@ -117,19 +118,21 @@ public class GameController : MonoBehaviour
 
 	public void DoPause()
 	{
+		currentPlayerController.DisableMovement();
 		PrePauseState = currentState;
 		currentState = State.Pause;
 
 		Time.timeScale = 0;
-		PauseScreen.SetActive(true);
+		UiController.PauseScreenEvent(true);
 	}
 
 	public void UnPause()
 	{
+		currentPlayerController.EnableMovement();
 		currentState = PrePauseState;
 
 		Time.timeScale = 1;
-		PauseScreen.SetActive(false);
+		UiController.PauseScreenEvent(false);
 	}
 
     void Awake()
@@ -140,7 +143,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        controller = PlayerActions.BindAll();
+		controller = PlayerActions.BindAll();
     }
 
     void AssignEvents()
@@ -166,6 +169,7 @@ public class GameController : MonoBehaviour
     void SpawnObjects()
     {
         currentPlayer = (GameObject)Instantiate(player, playerSpawn.position, playerSpawn.rotation);
+		currentPlayerController = currentPlayer.GetComponent<PlayerController>();
         if (spawnComet)
         {
             GameObject newComet = (GameObject)Instantiate(comet, cometSpawn.position, cometSpawn.rotation);
@@ -209,10 +213,12 @@ public class GameController : MonoBehaviour
                 }
                 break;
             case State.Pause:
-                break;
+				if (controller.Pause.WasPressed)
+				{
+					Pause();
+				}
+				break;
             case State.End:
-                UiController.TriggerKillScreen("Nothing");
-                starMan.enabled = false;
                 break;
             case State.Transition:
                 break;
@@ -317,7 +323,7 @@ public class GameController : MonoBehaviour
         yield return new WaitUntil(() => cometRigid.transform.position.y >= GameData.cometStartY);
         currentPlayer.transform.DOMoveY(GameData.playerStartY, GameData.cometStartAccel);
         yield return new WaitUntil(() => currentPlayer.transform.position.y >= GameData.playerStartY);
-        currentPlayer.GetComponent<PlayerController>().canMove = true;
+		currentPlayerController.EnableMovement();
         starMan.enabled = true;
         currentState = State.InGame;
     }
@@ -328,7 +334,10 @@ public class GameController : MonoBehaviour
 		currentPlayer.transform.DOMoveY(GameData.cometStartY, GameData.cometStartAccel * 1.2f).SetEase(Ease.InOutBack);
 		currentPlayer.transform.DOMoveX(0, GameData.cometStartAccel).SetEase(Ease.InOutBack);
 		yield return new WaitUntil(() => cometRigid.transform.position.y >= GameData.cometStartY);
-		currentPlayer.GetComponent<PlayerController>().canMove = false;
+		currentPlayerController.DisableMovement();
+		starMan.enabled = false;
+
+		UiController.TriggerKillScreen("Nothing");
 		starMan.enabled = false;
 		currentState = State.End;
 	}

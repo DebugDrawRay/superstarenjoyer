@@ -416,6 +416,18 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d54db71c3a3fe3b43a3b7f58886851e8, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &744150440 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000011489510458, guid: d54db71c3a3fe3b43a3b7f58886851e8,
+    type: 2}
+  m_PrefabInternal: {fileID: 744150439}
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!114 &744150441 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000013188500144, guid: d54db71c3a3fe3b43a3b7f58886851e8,
+    type: 2}
+  m_PrefabInternal: {fileID: 744150439}
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1001 &835423235
 Prefab:
   m_ObjectHideFlags: 0
@@ -455,29 +467,31 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114000011350973540, guid: 5c685d516722a0648b465920dc785652,
-        type: 2}
-      propertyPath: m_FirstSelected
-      value: 
-      objectReference: {fileID: 1579630228}
     - target: {fileID: 114000010813693184, guid: 5c685d516722a0648b465920dc785652,
         type: 2}
       propertyPath: ConstellationDisplayParent
       value: 
       objectReference: {fileID: 2125268305}
-    - target: {fileID: 4000014116261094, guid: 5c685d516722a0648b465920dc785652, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000014116261094, guid: 5c685d516722a0648b465920dc785652, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 114000011350973540, guid: 5c685d516722a0648b465920dc785652,
+        type: 2}
+      propertyPath: m_FirstSelected
+      value: 
+      objectReference: {fileID: 1579630228}
     - target: {fileID: 114000010083928252, guid: 5c685d516722a0648b465920dc785652,
         type: 2}
       propertyPath: PauseScreen
       value: 
       objectReference: {fileID: 469449289}
+    - target: {fileID: 114000010083928252, guid: 5c685d516722a0648b465920dc785652,
+        type: 2}
+      propertyPath: PauseReturnButton
+      value: 
+      objectReference: {fileID: 744150441}
+    - target: {fileID: 114000010083928252, guid: 5c685d516722a0648b465920dc785652,
+        type: 2}
+      propertyPath: KillScreenReplayButton
+      value: 
+      objectReference: {fileID: 744150440}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5c685d516722a0648b465920dc785652, type: 2}
   m_IsPrefabParent: 0

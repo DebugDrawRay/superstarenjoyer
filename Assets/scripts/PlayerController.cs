@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 	[Header("Movement")]
 	public float speed;
 	public float acceleration;
-	public bool canMove = false;
+	protected bool canMove = false;
 
 	private PlayerActions actions;
 	private Rigidbody rigid;
@@ -52,8 +52,11 @@ public class PlayerController : MonoBehaviour
 
 	void Update()
 	{
-		CompleteConstellationListener();
-		DrawConstellationLine();
+		if (canMove)
+		{
+			CompleteConstellationListener();
+			DrawConstellationLine();
+		}
 	}
 
 	void FixedUpdate()
@@ -93,6 +96,16 @@ public class PlayerController : MonoBehaviour
 		PlayerModel.transform.localEulerAngles = CurrentRotation = rotation;
 
 		rigid.velocity = newSpeed;
+	}
+
+	public void EnableMovement()
+	{
+		canMove = true;
+	}
+
+	public void DisableMovement()
+	{
+		canMove = false;
 	}
 
 	void Spiral()
