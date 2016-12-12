@@ -32,6 +32,8 @@ public class StarController : MonoBehaviour
 
     public Animator theAnimator;
 
+    public bool hasBeenTouched;
+
 	void Awake()
 	{
 		starData = new GameData.Star(this);

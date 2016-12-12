@@ -31,7 +31,7 @@ public class ConstellationManager : MonoBehaviour
     protected Guid? LastStarId;
     protected List<GameData.Link> Links;
 
-    GameObject player;
+    public GameObject player;
 
     public GameObject starHitCometParticle;
 
@@ -183,6 +183,7 @@ public class ConstellationManager : MonoBehaviour
             //added by Logan
             GameObject a = Instantiate(scorePopup, myPos, Quaternion.identity) as GameObject;//spawn score text and position it in the middle of the constellation
             a.GetComponent<TextMesh>().text = (myScore).ToString();//make it the correct score amount
+            player.GetComponent<PlayerController>().ResetStarsInCurrentConstellation();
 
             UiController.TriggerScoreData(constellation.Stars.Count, constellation.Links.Count, score, constellationName);
 
