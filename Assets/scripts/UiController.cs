@@ -85,6 +85,7 @@ public class UiController : MonoBehaviour
 
 	public Text scoreDisplay;
     public Text distanceDisplay;
+    public Text timeDisplay;
     public Text constellationInfo;
     public DistanceMeter distanceMeter;
     public Text velocityDisplay;
@@ -96,9 +97,21 @@ public class UiController : MonoBehaviour
     public GameObject killScreen;
     private Tween currentTween;
 
+    float aTime;
+    public bool stopAddingToTimeLasted;
+
     void Awake()
     {
         AssignEvents();
+    }
+
+    void Update()
+    {
+        if (stopAddingToTimeLasted == false)
+        {
+            aTime = aTime + Time.deltaTime;
+        }
+        DisplayTime(aTime);
     }
 
     void AssignEvents()
@@ -157,6 +170,12 @@ public class UiController : MonoBehaviour
     void DisplayKillScreen(string message)
     {
         killScreen.SetActive(true);
+    }
+
+    void DisplayTime(float theTime)
+    {
+        
+        timeDisplay.text = theTime.ToString("f1");
     }
 
 	void FadeInConstellation(string info)

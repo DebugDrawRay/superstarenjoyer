@@ -34,6 +34,8 @@ public class SoundBank : MonoBehaviour
         StarGood12,
         StarGood13,
         StarGood14,
+        StarTouch,
+        NewLink
     }
     public AudioClip[] SoundEffectClips;
 

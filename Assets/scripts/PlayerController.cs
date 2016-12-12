@@ -144,6 +144,8 @@ public class PlayerController : MonoBehaviour
 
 
                 //AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood);
+                //AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarTouch);
+                //AudioController.Instance.PlaySfx(SoundBank.SoundEffects.NewLink);
 
                 if (starsInCurrentConstellation == 1)
                 {

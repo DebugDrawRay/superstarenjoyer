@@ -313,6 +313,7 @@ public class GameController : MonoBehaviour
 
 	IEnumerator EndSequence()
 	{
+        //UiController.stopAddingToTimeLasted = true;
 		cometRigid.transform.DOMoveY(GameData.cometStartY, GameData.cometStartAccel * 1.2f);
 		currentPlayer.transform.DOMoveY(GameData.cometStartY, GameData.cometStartAccel * 1.2f).SetEase(Ease.InOutBack);
 		currentPlayer.transform.DOMoveX(0, GameData.cometStartAccel).SetEase(Ease.InOutBack);
