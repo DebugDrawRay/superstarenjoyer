@@ -12,7 +12,6 @@ public class PlayerActions : PlayerActionSet
     public PlayerAction Right;
 
     public PlayerAction PrimaryAction;
-
     public PlayerAction Pause;
 
     public PlayerActions()
@@ -25,7 +24,6 @@ public class PlayerActions : PlayerActionSet
         Move = CreateTwoAxisPlayerAction(Left, Right, Down, Up);
 
         PrimaryAction = CreatePlayerAction("Primary Action");
-
         Pause = CreatePlayerAction("Pause");
     }
 

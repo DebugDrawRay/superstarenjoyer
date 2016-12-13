@@ -59,6 +59,7 @@ public class AudioController : MonoBehaviour
     {
         AudioSource bus = effectBus[(int)clip];
 
+		bus.volume = 1;
         bus.clip = bank.Request(clip);
         bus.loop = false;
         bus.Play();

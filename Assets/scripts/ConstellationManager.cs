@@ -68,7 +68,7 @@ public class ConstellationManager : MonoBehaviour
         }
     }
 
-    public void AddStar(GameData.Star star)
+    public int AddStar(GameData.Star star)
     {
         //If star not already stored
         if (!Stars.ContainsKey(star.StarId))
@@ -122,6 +122,7 @@ public class ConstellationManager : MonoBehaviour
         }
 
         LastStarId = star.StarId;
+		return Stars.Count;
     }
 
     public bool CompleteConstellation()
@@ -183,7 +184,6 @@ public class ConstellationManager : MonoBehaviour
             //added by Logan
             GameObject a = Instantiate(scorePopup, myPos, Quaternion.identity) as GameObject;//spawn score text and position it in the middle of the constellation
             a.GetComponent<TextMesh>().text = (myScore).ToString();//make it the correct score amount
-            player.GetComponent<PlayerController>().ResetStarsInCurrentConstellation();
 
             UiController.TriggerScoreData(constellation.Stars.Count, constellation.Links.Count, score, constellationName);
 

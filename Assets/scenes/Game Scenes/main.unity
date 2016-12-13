@@ -400,6 +400,22 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 309365282}
+--- !u!1 &330774027 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1000011565247668, guid: 5c685d516722a0648b465920dc785652,
+    type: 2}
+  m_PrefabInternal: {fileID: 835423235}
+--- !u!114 &330774028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 330774027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 211b60cc2d71ab447acebd460d6a852e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &469449289 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1000010054226156, guid: d54db71c3a3fe3b43a3b7f58886851e8,
@@ -596,6 +612,11 @@ Prefab:
       propertyPath: KillScreenReplayButton
       value: 
       objectReference: {fileID: 744150440}
+    - target: {fileID: 114000011840028696, guid: 5c685d516722a0648b465920dc785652,
+        type: 2}
+      propertyPath: enableXInput
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5c685d516722a0648b465920dc785652, type: 2}
   m_IsPrefabParent: 0

@@ -191,7 +191,7 @@ GameObject:
   - 114: {fileID: 114000010637522384}
   - 114: {fileID: 114000010013898084}
   m_Layer: 5
-  m_Name: StartMenuLogan
+  m_Name: StartMenuCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
