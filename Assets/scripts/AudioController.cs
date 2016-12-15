@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class AudioController : MonoBehaviour
 {
     public AudioSource musicBus;
-    public AudioSource[] effectBus;
+//    public AudioSource[] effectBus;
     public AudioSource dynamicBus;
+
+	protected List<AudioSource> sfxBusses; 
 
     public static AudioController Instance;
 
@@ -16,6 +19,7 @@ public class AudioController : MonoBehaviour
     {
         Instance = this;
         bank = GetComponent<SoundBank>();
+		sfxBusses = new List<AudioSource>();
     }
 
     void Start()
@@ -24,6 +28,7 @@ public class AudioController : MonoBehaviour
         dynamicBus.loop = true;
         dynamicBus.Play();
     }
+
     public void StartMusic()
     {
         musicBus.clip = bank.Request(SoundBank.Music.Intro);
@@ -42,10 +47,22 @@ public class AudioController : MonoBehaviour
         musicBus.loop = false;
     }
 
-    public void PlayAtEnd(AudioSource source, AudioClip next, bool loop)
+    public void PlayAtEnd(SoundBank.SoundEffects clipToReplace, SoundBank.SoundEffects nextClip, bool loop)
     {
-        StartCoroutine(CheckForEnd(source, next, loop));
-    }
+		AudioSource source = GetSourcePlayingSfx(clipToReplace);
+		AudioClip next = bank.Request(nextClip);
+		if (source != null)
+		{
+			//If there is something to wait for, wait for it.
+			StartCoroutine(CheckForEnd(source, next, loop));
+		}
+		else
+		{
+			//Just play it
+			PlaySfx(clipToReplace, loop: loop);
+		}
+
+	}
 
     IEnumerator CheckForEnd(AudioSource source, AudioClip next, bool loop)
     {
@@ -55,24 +72,18 @@ public class AudioController : MonoBehaviour
         source.Play();
     }
 
-    public void PlaySfx(SoundBank.SoundEffects clip)
-    {
-        AudioSource bus = effectBus[(int)clip];
+	public void PlaySfx(SoundBank.SoundEffects clip, SoundBank.SoundEffects? interrupt = null, bool loop = false)
+	{
+		AudioSource bus = GetFreeSfxBus();
+		bus.clip = bank.Request(clip);
+		bus.Play();
+		bus.loop = loop;
 
-		bus.volume = 1;
-        bus.clip = bank.Request(clip);
-        bus.loop = false;
-        bus.Play();
-    }
-
-    public void PlaySfx(SoundBank.SoundEffects clip, int busIndex)
-    {
-        AudioSource bus = effectBus[busIndex];
-
-        bus.clip = bank.Request(clip);
-        bus.loop = false;
-        bus.Play();
-    }
+		if (interrupt != null)
+		{
+			InterruptSfx((SoundBank.SoundEffects)interrupt);
+		}
+	}
 
     public void FadeToDanger(bool inDanger)
     {
@@ -88,4 +99,42 @@ public class AudioController : MonoBehaviour
         }
     }
 
+	protected AudioSource GetFreeSfxBus()
+	{
+		for (int i = 0; i < sfxBusses.Count; i++)
+		{
+			if (!sfxBusses[i].isPlaying)
+				return sfxBusses[i];
+		}
+
+		//No busses available. Create.
+		GameObject go = new GameObject("SFXAudioSource");
+		go.transform.SetParent(transform);
+
+		AudioSource audioSrc = go.AddComponent<AudioSource>();
+		audioSrc.loop = false;
+		audioSrc.playOnAwake = false;
+		audioSrc.priority = 10;
+
+		sfxBusses.Add(audioSrc);
+		return audioSrc;
+	}
+
+	protected void InterruptSfx(SoundBank.SoundEffects clip)
+	{
+		AudioSource source = GetSourcePlayingSfx(clip);
+		if (source != null)
+			source.Stop();
+	}
+
+	protected AudioSource GetSourcePlayingSfx(SoundBank.SoundEffects clip)
+	{
+		AudioClip sfx = bank.Request(clip);
+		for (int i = 0; i < sfxBusses.Count; i++)
+		{
+			if (sfxBusses[i].clip == sfx && sfxBusses[i].isPlaying)
+				return sfxBusses[i];
+		}
+		return null;
+	}
 }

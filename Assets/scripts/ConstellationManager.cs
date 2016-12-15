@@ -199,7 +199,7 @@ public class ConstellationManager : MonoBehaviour
 
 
             AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationComplete);
-            AudioController.Instance.PlayAtEnd(AudioController.Instance.effectBus[(int)SoundBank.SoundEffects.ConstellationComplete], SoundBank.Instance.Request(SoundBank.SoundEffects.ConstellationSent), false);
+            AudioController.Instance.PlayAtEnd(SoundBank.SoundEffects.ConstellationComplete, SoundBank.SoundEffects.ConstellationSent, false);
             //StartCoroutine(ConstellationFlyAway(constellation));
 
             return true;

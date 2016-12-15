@@ -248,8 +248,8 @@ public class PlayerController : MonoBehaviour
 			lastStar = null;
 			canMove = false;
 			constManager.BreakConstellation();
-            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationComplete, (int)SoundBank.SoundEffects.ConstellationBroken);
-            for (int i = 0; i < colliders.Length; i++)
+			AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationComplete, SoundBank.SoundEffects.ConstellationBroken);
+			for (int i = 0; i < colliders.Length; i++)
 				colliders[i].enabled = false;
 
 			//gameObject.SetActive(false);
