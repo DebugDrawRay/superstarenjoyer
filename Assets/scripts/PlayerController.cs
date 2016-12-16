@@ -138,6 +138,14 @@ public class PlayerController : MonoBehaviour
 			}
             else
             {
+                
+                if (lastStar != null)
+                {
+                
+                    lastStar.gameObject.GetComponent<StarController>().latestStar = false;
+              
+                }
+
                 lastStar = isStar;
                 isStar.StopMovement();
                 isStar.starBoing.gameObject.SetActive(true);//active the star boing
@@ -148,79 +156,88 @@ public class PlayerController : MonoBehaviour
 
                 int starCount = constManager.AddStar(isStar.starData);
 
-                //if (hit.gameObject.GetComponent<StarController>().hasBeenTouched == false)
-                //{
-                //    starsInCurrentConstellation += 1;
-                //    hit.gameObject.GetComponent<StarController>().hasBeenTouched = true;
-                //}
+                if (hit.gameObject.GetComponent<StarController>().hasBeenTouched == false)
+                {
+                    
+
+                    /*if (hit.gameObject.GetComponent<StarController>().latestStar == false)
+                    {
+                        Debug.Log(starCount);
+                        if (starCount == 1)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood00);
+                        }
+                        else if (starCount == 2)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood01);
+                        }
+                        else if (starCount == 3)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood02);
+                        }
+                        else if (starCount == 4)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood03);
+                        }
+                        else if (starCount == 5)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood04);
+                        }
+                        else if (starCount == 6)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood05);
+                        }
+                        else if (starCount == 7)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood06);
+                        }
+                        else if (starCount == 8)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood07);
+                        }
+                        else if (starCount == 9)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood08);
+                        }
+                        else if (starCount == 10)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood09);
+                        }
+                        else if (starCount == 11)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood10);
+                        }
+                        else if (starCount == 12)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood11);
+                        }
+                        else if (starCount == 13)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood12);
+                        }
+                        else if (starCount == 14)
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood13);
+                        }
+                        else
+                        {
+                            AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood14);
+                        }
+                    }*/
+
+                    hit.gameObject.GetComponent<StarController>().latestStar = true;
+                    hit.gameObject.GetComponent<StarController>().hasBeenTouched = true;
+                }
 
 				ControllerInputManager.Instance.VibrateController(0.4f, 0.1f);
 
 				//AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood);
-				//AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarTouch);
+				
 				//AudioController.Instance.PlaySfx(SoundBank.SoundEffects.NewLink);
 
-				Debug.Log(starCount);
-                if (starCount == 1)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood00);
-                }
-                else if (starCount == 2)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood01);
-                }
-                else if (starCount == 3)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood02);
-                }
-                else if (starCount == 4)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood03);
-                }
-                else if (starCount == 5)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood04);
-                }
-                else if (starCount == 6)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood05);
-                }
-                else if (starCount == 7)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood06);
-                }
-                else if (starCount == 8)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood07);
-                }
-                else if (starCount == 9)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood08);
-                }
-                else if (starCount == 10)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood09);
-                }
-                else if (starCount == 11)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood10);
-                }
-                else if (starCount == 12)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood11);
-                }
-                else if (starCount == 13)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood12);
-                }
-                else if (starCount == 14)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood13);
-                }
-                else
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood14);
-                }
+                AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarTouch);
+
+				
 
                 isStar.DoBoing();
                 isStar.DoGotHitAnim();

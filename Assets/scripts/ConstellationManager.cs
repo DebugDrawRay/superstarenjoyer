@@ -74,12 +74,19 @@ public class ConstellationManager : MonoBehaviour
         if (!Stars.ContainsKey(star.StarId))
         {
             Stars.Add(star.StarId, star);
+
+            if (Stars.Count == 1)
+            {
+                AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood00);
+            }
         }
 
         //There is a last star
         if (LastStarId != null)
         {
             GameData.Star lastStar = Stars[(Guid)LastStarId];
+
+
 
             //Is not currently linked to star
             if (!lastStar.LinkedStars.Contains(star.StarId) || !star.LinkedStars.Contains(lastStar.StarId))
@@ -118,6 +125,79 @@ public class ConstellationManager : MonoBehaviour
 
                 Links.Add(link);
                 InvincibilityCountdown = InvincibiltyCountdownMax;
+
+                if (Stars.Count > 1)//1st star should not make a link sound
+                {
+                    if (lastStar != star)//make sure you're not running into the same star you're already attached to
+                    {
+                        AudioController.Instance.PlaySfx(SoundBank.SoundEffects.NewLink);
+                    }
+                }
+            }
+
+
+
+
+
+            if (lastStar != star)
+            {
+                Debug.Log(Stars.Count);
+                if (Stars.Count == 2)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood01);
+                }
+                else if (Stars.Count == 3)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood02);
+                }
+                else if (Stars.Count == 4)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood03);
+                }
+                else if (Stars.Count == 5)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood04);
+                }
+                else if (Stars.Count == 6)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood05);
+                }
+                else if (Stars.Count == 7)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood06);
+                }
+                else if (Stars.Count == 8)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood07);
+                }
+                else if (Stars.Count == 9)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood08);
+                }
+                else if (Stars.Count == 10)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood09);
+                }
+                else if (Stars.Count == 11)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood10);
+                }
+                else if (Stars.Count == 12)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood11);
+                }
+                else if (Stars.Count == 13)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood12);
+                }
+                else if (Stars.Count == 14)
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood13);
+                }
+                else
+                {
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood14);
+                }
             }
         }
 
