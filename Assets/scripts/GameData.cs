@@ -76,6 +76,7 @@ public static class GameData
 	public const float cometAccelerationBase = 0.2f;
 	public const float cometAccelerationIncrease = 0.075f;
     public const float dangerLimit = 0f;
+  public const float safetyLimit = 2.0f;
 	public const float cometBoostMultiplier = 5f;
 	public const float cometBoostTimerAdd = 1f;
 

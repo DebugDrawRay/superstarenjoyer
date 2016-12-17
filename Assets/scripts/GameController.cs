@@ -234,24 +234,51 @@ public class GameController : MonoBehaviour
 		}
 		cometRigid.transform.position = new Vector2(0, currentDistance);
 
-        if (currentDistance <= GameData.dangerLimit)
-        {
-            if (!inDanger)
-            {
-                AudioController.Instance.FadeToDanger(true);
-                inDanger = true;
-                UiController.TriggerCometDanger(true);
-            }
-        }
-        else
-        {
-            if (inDanger)
-            {
-                AudioController.Instance.FadeToDanger(false);
-                inDanger = false;
-                UiController.TriggerCometDanger(false);
-            }
-        }
+        //if (currentDistance <= GameData.dangerLimit)
+        //{
+        //    if (!inDanger)
+        //    {
+        //        AudioController.Instance.FadeToDanger(true);
+        //        inDanger = true;
+        //        UiController.TriggerCometDanger(true);
+        //    }
+        //}
+        //else
+        //{
+        //    if (inDanger)
+        //    {
+        //        AudioController.Instance.FadeToDanger(false);
+        //        inDanger = false;
+        //        UiController.TriggerCometDanger(false);
+        //    }
+        //}
+
+    // okay, Doug's trying something now
+    //
+    // I want to make it so that the comet has two thresholds, one for going into danger music
+    //   and another for coming out of it. The danger threshold is lower on the screen than the
+    //   safety threshold so that we don't have the music flopping back and forth repeatedly
+    //   when the player is dancing around the line
+    if (inDanger)
+    {
+      if (currentDistance >= GameData.safetyLimit)
+      {
+        inDanger = false;
+
+        AudioController.Instance.FadeToDanger(inDanger);
+        UiController.TriggerCometDanger(inDanger);
+      }
+    }
+    else
+    {
+      if (currentDistance <= GameData.dangerLimit)
+      {
+        inDanger = true;
+
+        AudioController.Instance.FadeToDanger(inDanger);
+        UiController.TriggerCometDanger(inDanger);
+      }
+    }
 
 		if (cometBoostTimer >= 0)
 			cometBoostTimer -= Time.deltaTime;
