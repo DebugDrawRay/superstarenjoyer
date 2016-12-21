@@ -37,6 +37,8 @@ public class StarController : MonoBehaviour
     //this is true if it's the most recent star the player has touched
     public bool latestStar;
 
+    public GameObject starScorePopup;
+
 	void Awake()
 	{
 		starData = new GameData.Star(this);

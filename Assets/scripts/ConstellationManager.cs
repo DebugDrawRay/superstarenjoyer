@@ -36,7 +36,9 @@ public class ConstellationManager : MonoBehaviour
     public GameObject starHitCometParticle;
 
     //added by Logan
-    public GameObject scorePopup;
+    public GameObject scorePopup;//for the whole constellation
+    public GameObject linkScorePopup;
+
 
     void Awake()
     {
@@ -79,6 +81,9 @@ public class ConstellationManager : MonoBehaviour
             {
                 AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood00);
             }
+
+            star.Controller.gameObject.GetComponent<StarController>().starScorePopup.GetComponent<Renderer>().enabled = true;
+            star.Controller.gameObject.GetComponent<StarController>().starScorePopup.GetComponent<Animator>().enabled = true;
         }
 
         //There is a last star
@@ -91,6 +96,7 @@ public class ConstellationManager : MonoBehaviour
             //Is not currently linked to star
             if (!lastStar.LinkedStars.Contains(star.StarId) || !star.LinkedStars.Contains(lastStar.StarId))
             {
+
                 //Error Checking - make sure links are being properly linked to both stars
                 if (lastStar.LinkedStars.Contains(star.StarId) != star.LinkedStars.Contains(lastStar.StarId))
                     Debug.Log("Previous Linkes weren't properly created");
@@ -106,10 +112,13 @@ public class ConstellationManager : MonoBehaviour
                 link.StarIds.Add(lastStar.StarId);
                 link.StarIds.Add(star.StarId);
 
+
                 //Create Link Object
                 var linkObject = Instantiate(LinkPrefab);
                 var line = linkObject.GetComponent<LineRenderer>();
                 line.useWorldSpace = false;
+
+
 
                 if (StarLinkParent != null)
                 {
@@ -117,11 +126,26 @@ public class ConstellationManager : MonoBehaviour
                     linkObject.transform.localScale = Vector3.one;
                 }
 
+
+
                 link.LineComponent = line;
                 link.StartPos = lastStar.Position;
                 link.EndPos = star.Position;
                 line.SetPosition(0, new Vector3(link.StartPos.x, link.StartPos.y, 1f));
                 line.SetPosition(1, new Vector3(link.EndPos.x, link.EndPos.y, 1f));
+
+                //score popup between links
+                if (Stars.Count > 1)
+                {
+                    if (link.StartPos != link.EndPos)//don't spawn a popup score unless there is actually a link
+                    {
+                        Vector3 scorePos = link.StartPos + (link.EndPos - link.StartPos) / 2;
+                        scorePos = new Vector3(scorePos.x + 0.25f, scorePos.y, scorePos.z);
+                        print("popup");
+                        GameObject a = Instantiate(linkScorePopup, scorePos, Quaternion.identity) as GameObject;
+                        a.transform.parent = linkObject.transform;
+                    }
+                }
 
                 Links.Add(link);
                 InvincibilityCountdown = InvincibiltyCountdownMax;

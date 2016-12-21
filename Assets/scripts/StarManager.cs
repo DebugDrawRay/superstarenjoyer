@@ -86,6 +86,8 @@ public class StarManager : MonoBehaviour
     void GetFromPool(Vector3 pos, Quaternion rot, Vector3 scale)
     {
         GameObject thePooledObj = InactiveStars.transform.GetChild(0).gameObject;
+        thePooledObj.GetComponent<StarController>().starScorePopup.GetComponent<Renderer>().enabled = false;
+        thePooledObj.GetComponent<StarController>().starScorePopup.GetComponent<Animator>().enabled = false;
         thePooledObj.transform.position = pos;
         thePooledObj.transform.rotation = rot;
         //thePooledObj.transform.localScale = scale;
