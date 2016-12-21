@@ -141,7 +141,8 @@ public class ConstellationManager : MonoBehaviour
                     {
                         Vector3 scorePos = link.StartPos + (link.EndPos - link.StartPos) / 2;
                         scorePos = new Vector3(scorePos.x + 0.25f, scorePos.y, scorePos.z);
-                        print("popup");
+                        //scorePos = scorePos + link.LineComponent.gameObject.transform.up;
+                        //print("popup");
                         GameObject a = Instantiate(linkScorePopup, scorePos, Quaternion.identity) as GameObject;
                         a.transform.parent = linkObject.transform;
                     }
