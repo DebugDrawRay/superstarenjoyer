@@ -10,6 +10,9 @@ public class StarController : MonoBehaviour
 	public UnityEvent starTriggered;
 	public float destroyStarWhenBelowThisYValue;
 	private float starSpeed;
+    public bool usesCustomSpeed;
+    public float customSpeed;
+    public Vector3 customSpeedDirection;
 
 	[HideInInspector]
 	public GameData.Star starData;
@@ -58,8 +61,9 @@ public class StarController : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
+        
 		starSpeed = Random.Range(GameData.minStarSpeed, GameData.maxStarSpeed);
-		StartMovement();
+        StartMovement();
 	}
 
 	// Update is called once per frame
@@ -157,10 +161,19 @@ public class StarController : MonoBehaviour
 
 	public void StartMovement(float speedModifier = 1)
 	{
-		float speed = starSpeed * speedModifier;
+        if (usesCustomSpeed == false)
+        {
+            float speed = starSpeed * speedModifier;
 
-		GetComponent<Collider>().enabled = true;
-		GetComponent<Rigidbody>().velocity = new Vector3(0, -1, 0) * speed;
+            GetComponent<Collider>().enabled = true;
+            GetComponent<Rigidbody>().velocity = new Vector3(0, -1, 0) * speed;
+        }
+        else
+        {
+            //custom speed and direction
+            GetComponent<Collider>().enabled = true;
+            GetComponent<Rigidbody>().velocity = customSpeed * customSpeedDirection;
+        }
 	}
 
 	void OnTriggerEnter(Collider coll)
@@ -188,5 +201,11 @@ public class StarController : MonoBehaviour
     public void DoGotHitAnim()
     {
         theAnimator.GetComponent<Animator>().SetBool("DoQuickGrowThenShrink", true);
+    }
+
+    //there are some values on start that need to be refreshed if spawned from a star pattern emitter (it uses custom speed)
+    public void RefreshCustomSpeedValues()
+    {
+        StartMovement();
     }
 }

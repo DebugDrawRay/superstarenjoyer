@@ -3,8 +3,8 @@ using System.Collections;
 
 public class StarManager : MonoBehaviour
 {
-    private GameObject ActiveStars;
-    private GameObject InactiveStars;
+    public GameObject ActiveStars;
+    public GameObject InactiveStars;
 
     public GameObject[] StarsToSpawn;
 
