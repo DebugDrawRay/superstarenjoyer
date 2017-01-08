@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class StarPatternManager : MonoBehaviour {
 
@@ -12,6 +13,40 @@ public class StarPatternManager : MonoBehaviour {
 
     public float StarScale;
 
+    public enum PatternType
+    {
+        EightStarDiamond,
+        Spiral01
+    }
+    public PatternType currentPatternType;
+
+    //var dropdown = PatternType.EightStarDiamond;
+
+    /*public class PoopDoodoo : EditorWindow
+    {
+        public string[] options = new string[]{"Eight star diamond", "Spiral01"};
+        public int index = 0;
+        [MenuItem("Examples/ Editor GUILayout Popup usage")]
+        static void Init()
+        {
+            EditorWindow window = GetWindow(typeof(PoopDoodoo));
+            window.Show();
+        }
+        void OnGUI()
+        {
+            index = EditorGUILayout.Popup(index, options);
+            if (GUILayout.Button("Create"))
+            {
+                
+            }
+        }
+    }*/
+
+    /*int selected = 0;
+    string[] options = new string[]{"Eight star diamond", "Spiral01"};
+    selected = EditorGUILayout.Popup("Label", selected, options);*/
+
+
 	// Use this for initialization
 	void Start () 
     {
@@ -19,7 +54,8 @@ public class StarPatternManager : MonoBehaviour {
         InactiveStars = GameController.GetComponent<StarManager>().InactiveStars;
 
 
-        EightStarDiamond(1, new int[] {1, 1, 1, 1, 1, 1, 1, 1});
+        //EightStarDiamond(1, new int[] {1, 1, 1, 1, 1, 1, 1, 1});
+        StartCoroutine(Spiral01(2, new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 15, 0.1f));
 	}
 	
 	// Update is called once per frame
@@ -150,6 +186,22 @@ public class StarPatternManager : MonoBehaviour {
         SpawnUpLeft(speed, types[7]);
     }
 
+    //coroutine
+    IEnumerator Spiral01(float speed, int[] types, float rotateAmt, float timeInterval)
+    {
+        for (int i = 0; i < types.Length; i++)
+        {
+
+            SpawnInEmitterFacingDir(speed, types[i]);
+
+            //transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z + 15));
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + rotateAmt);
+
+
+            yield return new WaitForSeconds(timeInterval);
+        }
+    }
+
     /*patterns************/
 
     /*pieces of patterns*********/
@@ -191,6 +243,11 @@ public class StarPatternManager : MonoBehaviour {
     void SpawnUpLeft(float speed, int type)
     {
         SpawnObject(speed, new Vector3(-0.5f, 0.5f, 0), type);
+    }
+
+    void SpawnInEmitterFacingDir(float speed, int type)
+    {
+        SpawnObject(speed, transform.up, type);
     }
 
     /*pieces of patterns*********/
