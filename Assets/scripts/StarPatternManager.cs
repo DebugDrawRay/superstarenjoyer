@@ -9,16 +9,26 @@ public class StarPatternManager : MonoBehaviour {
     private GameObject ActiveStars;
     private GameObject InactiveStars;
 
-    public GameObject[] StarsToSpawn;
+    public GameObject[] StarTypesAvailable;
 
     public float StarScale;
 
     public enum PatternType
     {
         EightStarDiamond,
-        Spiral01
+        Spiral01,
+        Wall01
     }
     public PatternType currentPatternType;
+    public float starMoveSpeed;
+    public int[] starTypesToSpawn;
+    public float wallSpacing;//the amount of space between stars in the wall pattern
+    public bool loopPattern;//if this is true, it will repeat the pattern until it is destroyed
+    public float timeBeforeStartingPatternAgainBase;
+    public float timeBeforeStartingPatternAgain;
+
+    //this is the pattern emitter's move speed
+    private float moveSpeed;
 
     //var dropdown = PatternType.EightStarDiamond;
 
@@ -50,30 +60,76 @@ public class StarPatternManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        //moveSpeed = Random.Range(GameData.minStarSpeed, GameData.maxStarSpeed);
+        //StartMovement(moveSpeed);
+
         ActiveStars = GameController.GetComponent<StarManager>().ActiveStars;
         InactiveStars = GameController.GetComponent<StarManager>().InactiveStars;
 
 
-        //EightStarDiamond(1, new int[] {1, 1, 1, 1, 1, 1, 1, 1});
-        StartCoroutine(Spiral01(2, new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 15, 0.1f));
+
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-	    
-	}
-
-    void SpawnObject(float customSpeed, Vector3 dir, int type)
-    {
-        if (InactiveStars.transform.childCount <= 0)
+        if (loopPattern == true)
         {
-            AddToPool(transform.position, Quaternion.identity, Vector3.one, customSpeed, dir, type);
-            GetFromPool(transform.position, Quaternion.identity, Vector3.one, customSpeed, dir, type);
+            if (timeBeforeStartingPatternAgain > 0)
+            {
+                timeBeforeStartingPatternAgain -= Time.deltaTime;
+            }
+            else
+            {
+                DetermineWhichPatternToUse();
+                timeBeforeStartingPatternAgain = timeBeforeStartingPatternAgainBase;
+            }
         }
         else
         {
-            GetFromPool(transform.position, Quaternion.identity, Vector3.one, customSpeed, dir, type);
+            if (timeBeforeStartingPatternAgain > 0)
+            {
+                //timeBeforeStartingPatternAgain -= Time.deltaTime;
+            }
+            else
+            {
+                DetermineWhichPatternToUse();
+                timeBeforeStartingPatternAgain = timeBeforeStartingPatternAgainBase;
+            }
+        }
+	}
+
+    void DetermineWhichPatternToUse()
+    {
+        if (currentPatternType == PatternType.EightStarDiamond)
+        {
+            EightStarDiamond(starMoveSpeed, starTypesToSpawn);
+        }
+        else if (currentPatternType == PatternType.Spiral01)
+        {
+            StartCoroutine(Spiral01(starMoveSpeed, starTypesToSpawn, 15, 0.1f));
+        }
+        else if (currentPatternType == PatternType.Wall01)
+        {
+            Wall01(starMoveSpeed, starTypesToSpawn, wallSpacing);
+        }
+    }
+
+    public void StartMovement(float speedModifier = 1)
+    {
+        GetComponent<Rigidbody>().velocity = new Vector3(0, -1, 0) * speedModifier;
+    }
+
+    void SpawnObject(float customSpeed, Vector3 dir, int type, Vector3 offset)
+    {
+        if (InactiveStars.transform.childCount <= 0)
+        {
+            AddToPool(transform.position + offset, Quaternion.identity, Vector3.one, customSpeed, dir, type);
+            GetFromPool(transform.position + offset, Quaternion.identity, Vector3.one, customSpeed, dir, type);
+        }
+        else
+        {
+            GetFromPool(transform.position + offset, Quaternion.identity, Vector3.one, customSpeed, dir, type);
         }
 
         //GetFromPool(transform.position, Quaternion.identity, Vector3.one, customSpeed, dir, type);
@@ -86,23 +142,23 @@ public class StarPatternManager : MonoBehaviour {
 
         if (type == 0)
         {
-            a = Instantiate(StarsToSpawn[Random.Range(0, StarsToSpawn.Length)], pos, rot, InactiveStars.transform) as GameObject;
+            a = Instantiate(StarTypesAvailable[Random.Range(0, StarTypesAvailable.Length)], pos, rot, InactiveStars.transform) as GameObject;
         }
         else if (type == 1)
         {
-            a = Instantiate(StarsToSpawn[0], pos, rot, InactiveStars.transform) as GameObject;
+            a = Instantiate(StarTypesAvailable[0], pos, rot, InactiveStars.transform) as GameObject;
         }
         else if (type == 2)
         {
-            a = Instantiate(StarsToSpawn[1], pos, rot, InactiveStars.transform) as GameObject;
+            a = Instantiate(StarTypesAvailable[1], pos, rot, InactiveStars.transform) as GameObject;
         }
         else if (type == 3)
         {
-            a = Instantiate(StarsToSpawn[2], pos, rot, InactiveStars.transform) as GameObject;
+            a = Instantiate(StarTypesAvailable[2], pos, rot, InactiveStars.transform) as GameObject;
         }
         else if (type == 4)
         {
-            a = Instantiate(StarsToSpawn[3], pos, rot, InactiveStars.transform) as GameObject;
+            a = Instantiate(StarTypesAvailable[3], pos, rot, InactiveStars.transform) as GameObject;
         }
 
         a.transform.localScale = new Vector3(StarScale, StarScale, StarScale);
@@ -202,52 +258,67 @@ public class StarPatternManager : MonoBehaviour {
         }
     }
 
+    void Wall01(float speed, int[] types, float spacing)
+    {
+        Vector3 currentOffset = new Vector3((0 - ((types.Length * spacing) / 2) + (spacing / 2)), 0, 0);
+
+        for(int i = 0; i < types.Length; i++)
+        {
+            SpawnDownWithOffset(speed, types[i], currentOffset);
+            currentOffset = new Vector3(currentOffset.x + spacing, currentOffset.y, currentOffset.z);
+        }
+    }
     /*patterns************/
 
     /*pieces of patterns*********/
     void SpawnUp(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(0, 1, 0), type);
+        SpawnObject(speed, new Vector3(0, 1, 0), type, Vector3.zero);
     }
 
     void SpawnUpRight(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(0.5f, 0.5f, 0), type);
+        SpawnObject(speed, new Vector3(0.5f, 0.5f, 0), type, Vector3.zero);
     }
 
     void SpawnRight(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(1, 0, 0), type);
+        SpawnObject(speed, new Vector3(1, 0, 0), type, Vector3.zero);
     }
 
     void SpawnDownRight(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(0.5f, -0.5f, 0), type);
+        SpawnObject(speed, new Vector3(0.5f, -0.5f, 0), type, Vector3.zero);
     }
 
     void SpawnDown(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(0, -1, 0), type);
+        SpawnObject(speed, new Vector3(0, -1, 0), type, Vector3.zero);
     }
 
     void SpawnDownLeft(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(-0.5f, -0.5f, 0), type);
+        SpawnObject(speed, new Vector3(-0.5f, -0.5f, 0), type, Vector3.zero);
     }
 
     void SpawnLeft(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(-1, 0, 0), type);
+        SpawnObject(speed, new Vector3(-1, 0, 0), type, Vector3.zero);
     }
 
     void SpawnUpLeft(float speed, int type)
     {
-        SpawnObject(speed, new Vector3(-0.5f, 0.5f, 0), type);
+        SpawnObject(speed, new Vector3(-0.5f, 0.5f, 0), type, Vector3.zero);
     }
 
     void SpawnInEmitterFacingDir(float speed, int type)
     {
-        SpawnObject(speed, transform.up, type);
+        SpawnObject(speed, transform.up, type, Vector3.zero);
+    }
+
+    void SpawnDownWithOffset(float speed, int type, Vector3 offset)
+    {
+        SpawnObject(speed, new Vector3(0, -1, 0), type, offset);
     }
 
     /*pieces of patterns*********/

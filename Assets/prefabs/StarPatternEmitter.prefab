@@ -23,6 +23,8 @@ GameObject:
   - 135: {fileID: 135000014207032768}
   - 23: {fileID: 23000012379400924}
   - 114: {fileID: 114000011454488066}
+  - 54: {fileID: 54000011925503882}
+  - 114: {fileID: 114000010788811346}
   m_Layer: 0
   m_Name: StarPatternEmitter
   m_TagString: Untagged
@@ -37,7 +39,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010891871810}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2.65, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -79,6 +81,33 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010891871810}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!54 &54000011925503882
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010891871810}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &114000010788811346
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010891871810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac1148a49edc914b9d1d600751459f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyParent: {fileID: 0}
 --- !u!114 &114000011454488066
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -91,12 +120,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameController: {fileID: 0}
-  StarsToSpawn:
+  StarTypesAvailable:
   - {fileID: 1000013448462480, guid: c66a85e14111e9c42b1df12bc1d10d83, type: 2}
   - {fileID: 1000013985736620, guid: f8ccebe940acaa94d980aff2bb0c558f, type: 2}
   - {fileID: 1000013361512614, guid: e84f55e44076051459578d604b5fdeac, type: 2}
   - {fileID: 1000013249568514, guid: 1bdfa4018317c474fa8f809b498e6439, type: 2}
   StarScale: 0.65
+  currentPatternType: 2
+  starMoveSpeed: 1
+  starTypesToSpawn: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  wallSpacing: 0.5
+  loopPattern: 1
+  timeBeforeStartingPatternAgainBase: 4
+  timeBeforeStartingPatternAgain: 0
 --- !u!135 &135000014207032768
 SphereCollider:
   m_ObjectHideFlags: 1
