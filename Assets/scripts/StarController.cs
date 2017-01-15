@@ -9,6 +9,8 @@ public class StarController : MonoBehaviour
 	public GameData.StarType theStarType;
 	public UnityEvent starTriggered;
 	public float destroyStarWhenBelowThisYValue;
+    public float destroyStarWhenAboveThisYValue;
+    public float destroyStarWhenPastThisXValue;
 	private float starSpeed;
     public bool usesCustomSpeed;
     public float customSpeed;
@@ -71,7 +73,7 @@ public class StarController : MonoBehaviour
 	{
 		if (gameObject.layer == LayerMask.NameToLayer("Stars"))
 		{
-			if (transform.position.y < destroyStarWhenBelowThisYValue)
+            if (transform.position.y < destroyStarWhenBelowThisYValue || transform.position.y > destroyStarWhenAboveThisYValue || transform.position.x > destroyStarWhenPastThisXValue || transform.position.x < -destroyStarWhenPastThisXValue)
 			{
 				StopMovement();
 				transform.position = new Vector3(0, 0, 0);
@@ -151,12 +153,20 @@ public class StarController : MonoBehaviour
 
 	public void DeactivateCollider()
 	{
-		GetComponent<Collider>().enabled = false;
+        if (GetComponent<Collider>() != null)
+        {
+            GetComponent<Collider>().enabled = false;
+        }
 	}
 
 	public void StopMovement()
 	{
 		GetComponent<Rigidbody>().velocity = Vector3.zero;
+
+        if (GetComponent<StarPatternManager>() != null)
+        {
+            GetComponent<StarPatternManager>().active = false;
+        }
 	}
 
 	public void StartMovement(float speedModifier = 1)
@@ -165,14 +175,25 @@ public class StarController : MonoBehaviour
         {
             float speed = starSpeed * speedModifier;
 
-            GetComponent<Collider>().enabled = true;
+            if (GetComponent<Collider>() != null)
+            {
+                GetComponent<Collider>().enabled = true;
+            }
             GetComponent<Rigidbody>().velocity = new Vector3(0, -1, 0) * speed;
         }
         else
         {
             //custom speed and direction
-            GetComponent<Collider>().enabled = true;
+            if (GetComponent<Collider>() != null)
+            {
+                GetComponent<Collider>().enabled = true;
+            }
             GetComponent<Rigidbody>().velocity = customSpeed * customSpeedDirection;
+        }
+
+        if (GetComponent<StarPatternManager>() != null)
+        {
+            GetComponent<StarPatternManager>().active = true;
         }
 	}
 

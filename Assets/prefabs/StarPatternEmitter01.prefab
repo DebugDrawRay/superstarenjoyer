@@ -20,13 +20,13 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012111530382}
   - 33: {fileID: 33000010470184692}
-  - 135: {fileID: 135000014207032768}
   - 23: {fileID: 23000012379400924}
   - 114: {fileID: 114000011454488066}
   - 54: {fileID: 54000011925503882}
   - 114: {fileID: 114000010788811346}
-  m_Layer: 0
-  m_Name: StarPatternEmitter
+  - 114: {fileID: 114000010977409042}
+  m_Layer: 10
+  m_Name: StarPatternEmitter01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 427f91181b8b34346afcf38e5fe2c98b, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -108,6 +108,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyParent: {fileID: 0}
+--- !u!114 &114000010977409042
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010891871810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4185a2ee0aad6f5459f7a8554d7eb2ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theStarType: 0
+  starTriggered:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  destroyStarWhenBelowThisYValue: -5
+  destroyStarWhenAboveThisYValue: 10
+  destroyStarWhenPastThisXValue: 5.5
+  usesCustomSpeed: 0
+  customSpeed: 0
+  customSpeedDirection: {x: 0, y: 0, z: 0}
+  starData:
+    Type: 0
+    Position: {x: 0, y: 0, z: 0}
+  shrinkSpeed: 1
+  doShrink: 0
+  starBoing: {fileID: 1000011221677726, guid: e84f55e44076051459578d604b5fdeac, type: 2}
+  starBoing02: {fileID: 1000012863644340, guid: e84f55e44076051459578d604b5fdeac,
+    type: 2}
+  delayBeforeSecondBoingTimerBase: 0.1
+  delayBeforeSecondBoingTimer: 120
+  theAnimator: {fileID: 95000011674511924, guid: e84f55e44076051459578d604b5fdeac,
+    type: 2}
+  hasBeenTouched: 0
+  latestStar: 0
+  starScorePopup: {fileID: 1000011504818204, guid: e84f55e44076051459578d604b5fdeac,
+    type: 2}
 --- !u!114 &114000011454488066
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,22 +165,15 @@ MonoBehaviour:
   - {fileID: 1000013361512614, guid: e84f55e44076051459578d604b5fdeac, type: 2}
   - {fileID: 1000013249568514, guid: 1bdfa4018317c474fa8f809b498e6439, type: 2}
   StarScale: 0.65
-  currentPatternType: 2
+  currentPatternType: 0
+  randomPatternChooseOnStart: 1
+  randomPatternChooseEveryTime: 0
   starMoveSpeed: 1
-  starTypesToSpawn: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  wallSpacing: 0.5
+  starTypesToSpawn: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  spiralRotateAmt: 15
+  spiralSpawnTime: 0.025
+  wallSpacing: 1
   loopPattern: 1
   timeBeforeStartingPatternAgainBase: 4
   timeBeforeStartingPatternAgain: 0
---- !u!135 &135000014207032768
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010891871810}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  active: 0

@@ -68,7 +68,7 @@ public static class GameData
     //Star spawn
     public const float fieldSize = 4;
     public const float starSize = .5f;
-    public const float starSpawnY = 15;
+    public const float starSpawnY = 8;//15;
 
     //Comet parameters
     public const float cometAcceleration = .003f;

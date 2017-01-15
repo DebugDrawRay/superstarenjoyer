@@ -750,6 +750,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114000012969979918, guid: 5c685d516722a0648b465920dc785652,
+        type: 2}
+      propertyPath: StarsToSpawn.Array.size
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4000014116261094, guid: 5c685d516722a0648b465920dc785652, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0

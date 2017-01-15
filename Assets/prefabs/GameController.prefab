@@ -123,9 +123,6 @@ MonoBehaviour:
   frozen: 0
   starMan: {fileID: 114000012969979918}
   spawnComet: 1
-  PauseScreen: {fileID: 0}
-  PauseReturnButton: {fileID: 0}
-  KillScreenReplayButton: {fileID: 0}
 --- !u!114 &114000010813693184
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -145,9 +142,11 @@ MonoBehaviour:
   ConstellationData: {fileID: 11400000, guid: 781cde6916bb12e4eaf812656ab0bcfe, type: 2}
   LinkPrefab: {fileID: 191624, guid: c74daa68dcd86564e9f0953017e146d5, type: 2}
   StarLinkParent: {fileID: 0}
+  player: {fileID: 0}
   starHitCometParticle: {fileID: 1000013988914792, guid: 7a02555c06b70004fb2e2e2a7fa0e2c3,
     type: 2}
   scorePopup: {fileID: 1000010131516814, guid: ff07c0391a969f84d8fcc521da152bea, type: 2}
+  linkScorePopup: {fileID: 0}
 --- !u!114 &114000011350973540
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -227,9 +226,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfbb2857d1e7e0041a5fbb4a724a50f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActiveStars: {fileID: 0}
+  InactiveStars: {fileID: 0}
   StarsToSpawn:
   - {fileID: 1000013249568514, guid: 1bdfa4018317c474fa8f809b498e6439, type: 2}
   - {fileID: 1000013448462480, guid: c66a85e14111e9c42b1df12bc1d10d83, type: 2}
   - {fileID: 1000013361512614, guid: e84f55e44076051459578d604b5fdeac, type: 2}
   - {fileID: 1000013985736620, guid: f8ccebe940acaa94d980aff2bb0c558f, type: 2}
+  - {fileID: 1000010891871810, guid: 5d80c9f7563482c46afd690053d99418, type: 2}
   starScale: 0.65

@@ -28,7 +28,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000011504818204
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,7 +100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000013361512614
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,6 +485,11 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   destroyStarWhenBelowThisYValue: -5
+  destroyStarWhenAboveThisYValue: 10
+  destroyStarWhenPastThisXValue: 5.5
+  usesCustomSpeed: 0
+  customSpeed: 0
+  customSpeedDirection: {x: 0, y: 0, z: 0}
   starData:
     Type: 0
     Position: {x: 0, y: 0, z: 0}

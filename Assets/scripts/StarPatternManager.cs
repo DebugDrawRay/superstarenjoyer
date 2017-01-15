@@ -20,8 +20,12 @@ public class StarPatternManager : MonoBehaviour {
         Wall01
     }
     public PatternType currentPatternType;
+    public bool randomPatternChooseOnStart;//chooses a random pattern on start and sticks with it
+    public bool randomPatternChooseEveryTime;//chooses a random pattern every time it needs to spawn a pattern
     public float starMoveSpeed;
     public int[] starTypesToSpawn;
+    public float spiralRotateAmt;//the amount of rotation between star spawns in the spiral pattern
+    public float spiralSpawnTime;//the amount of time between star spawns in the spiral pattern
     public float wallSpacing;//the amount of space between stars in the wall pattern
     public bool loopPattern;//if this is true, it will repeat the pattern until it is destroyed
     public float timeBeforeStartingPatternAgainBase;
@@ -29,6 +33,10 @@ public class StarPatternManager : MonoBehaviour {
 
     //this is the pattern emitter's move speed
     private float moveSpeed;
+
+    public bool active;
+
+    //public float destroyStarWhenBelowThisYValue;
 
     //var dropdown = PatternType.EightStarDiamond;
 
@@ -60,8 +68,27 @@ public class StarPatternManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        //moveSpeed = Random.Range(GameData.minStarSpeed, GameData.maxStarSpeed);
-        //StartMovement(moveSpeed);
+        GameController = GameObject.Find("GameController");
+        starMoveSpeed = Random.Range(GameData.minStarSpeed, GameData.maxStarSpeed);
+        moveSpeed = Random.Range(GameData.minStarSpeed, GameData.maxStarSpeed);
+        if (randomPatternChooseOnStart == true)
+        {
+            int choice = Random.Range(0, 3);
+
+            if (choice == 0)
+            {
+                currentPatternType = PatternType.EightStarDiamond;
+            }
+            else if (choice == 1)
+            {
+                currentPatternType = PatternType.Spiral01;
+            }
+            else if (choice == 2)
+            {
+                currentPatternType = PatternType.Wall01;
+            }
+        }
+        StartMovement(moveSpeed);
 
         ActiveStars = GameController.GetComponent<StarManager>().ActiveStars;
         InactiveStars = GameController.GetComponent<StarManager>().InactiveStars;
@@ -73,16 +100,24 @@ public class StarPatternManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
+        /*if (transform.position.y < destroyStarWhenBelowThisYValue)
+        {
+            Destroy(gameObject);
+        }*/
+
         if (loopPattern == true)
         {
-            if (timeBeforeStartingPatternAgain > 0)
+            if (active == true)
             {
-                timeBeforeStartingPatternAgain -= Time.deltaTime;
-            }
-            else
-            {
-                DetermineWhichPatternToUse();
-                timeBeforeStartingPatternAgain = timeBeforeStartingPatternAgainBase;
+                if (timeBeforeStartingPatternAgain > 0)
+                {
+                    timeBeforeStartingPatternAgain -= Time.deltaTime;
+                }
+                else
+                {
+                    DetermineWhichPatternToUse();
+                    timeBeforeStartingPatternAgain = timeBeforeStartingPatternAgainBase;
+                }
             }
         }
         else
@@ -101,13 +136,15 @@ public class StarPatternManager : MonoBehaviour {
 
     void DetermineWhichPatternToUse()
     {
+        starMoveSpeed = Random.Range(GameData.minStarSpeed, GameData.maxStarSpeed);
+
         if (currentPatternType == PatternType.EightStarDiamond)
         {
             EightStarDiamond(starMoveSpeed, starTypesToSpawn);
         }
         else if (currentPatternType == PatternType.Spiral01)
         {
-            StartCoroutine(Spiral01(starMoveSpeed, starTypesToSpawn, 15, 0.1f));
+            StartCoroutine(Spiral01(starMoveSpeed, starTypesToSpawn, spiralRotateAmt, spiralSpawnTime));
         }
         else if (currentPatternType == PatternType.Wall01)
         {
@@ -260,12 +297,34 @@ public class StarPatternManager : MonoBehaviour {
 
     void Wall01(float speed, int[] types, float spacing)
     {
-        Vector3 currentOffset = new Vector3((0 - ((types.Length * spacing) / 2) + (spacing / 2)), 0, 0);
+        /*Vector3 currentOffset = new Vector3((0 - ((types.Length * spacing) / 2) + (spacing / 2)), 0, 0);
 
         for(int i = 0; i < types.Length; i++)
         {
             SpawnDownWithOffset(speed, types[i], currentOffset);
             currentOffset = new Vector3(currentOffset.x + spacing, currentOffset.y, currentOffset.z);
+        }*/
+
+        bool left = false;
+        float customSpeed01 = 1;
+        float customSpeed02 = 1;
+
+        SpawnDown(2, 0);
+
+        for(int i = 0; i < types.Length; i++)
+        {
+            if (left == false)
+            {
+                SpawnLeft(customSpeed01, types[i]);
+                customSpeed01 += 0.25f;
+                left = true;
+            }
+            else
+            {
+                SpawnRight(customSpeed02, types[i]);
+                customSpeed02 += 0.25f;
+                left = false;
+            }
         }
     }
     /*patterns************/

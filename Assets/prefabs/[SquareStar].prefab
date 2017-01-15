@@ -473,6 +473,11 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   destroyStarWhenBelowThisYValue: -5
+  destroyStarWhenAboveThisYValue: 10
+  destroyStarWhenPastThisXValue: 5.5
+  usesCustomSpeed: 0
+  customSpeed: 0
+  customSpeedDirection: {x: 0, y: 0, z: 0}
   starData:
     Type: 0
     Position: {x: 0, y: 0, z: 0}
