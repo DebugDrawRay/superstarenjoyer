@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
 		actions = PlayerActions.BindAll();
 		rigid = GetComponent<Rigidbody>();
 		constManager = ConstellationManager.Instance;
-        constManager.player = gameObject;
 	}
 
 	void Update()
@@ -81,7 +80,7 @@ public class PlayerController : MonoBehaviour
 			if (constManager.CompleteConstellation())
 			{
 				ControllerInputManager.Instance.VibrateController(0.8f, 0.4f);
-				ChangeColor(GameData.StarType.None);
+				ChangeColor(Star.StarType.None);
 				lastStar = null;
 			}
 		}
@@ -130,9 +129,9 @@ public class PlayerController : MonoBehaviour
             {
                 Camera.main.GetComponent<CameraController>().DoScreenShake();
 				GameController.TriggerCometBoost();
-                constManager.BreakConstellation();
+                constManager.BreakCurrentConstellation();
                 isStar.FadeOutStar();
-                ChangeColor(GameData.StarType.None);
+                ChangeColor(Star.StarType.None);
                 lastStar = null;
 				ControllerInputManager.Instance.VibrateController(1f, 0.4f);
 			}
@@ -264,7 +263,7 @@ public class PlayerController : MonoBehaviour
 			var colliders = gameObject.GetComponents<Collider>();
 			lastStar = null;
 			canMove = false;
-			constManager.BreakConstellation();
+			constManager.BreakCurrentConstellation();
 			AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationComplete, SoundBank.SoundEffects.ConstellationBroken);
 			for (int i = 0; i < colliders.Length; i++)
 				colliders[i].enabled = false;
@@ -274,24 +273,24 @@ public class PlayerController : MonoBehaviour
 
     }
 
-	public void ChangeColor(GameData.StarType type)
+	public void ChangeColor(Star.StarType type)
 	{
 		Renderer render = PlayerModel.GetComponent<Renderer>();
 		switch (type)
 		{
-			case GameData.StarType.Circle:
+			case Star.StarType.Circle:
 				render.material = BlueMat;
 				break;
-			case GameData.StarType.Square:
+			case Star.StarType.Square:
 				render.material = PinkMat;
 				break;
-			case GameData.StarType.Star:
+			case Star.StarType.Star:
 				render.material = YellowMat;
 				break;
-			case GameData.StarType.Triangle:
+			case Star.StarType.Triangle:
 				render.material = GreenMat;
 				break;
-			case GameData.StarType.None:
+			case Star.StarType.None:
 				render.material = NormalMat;
 				break;
 		}

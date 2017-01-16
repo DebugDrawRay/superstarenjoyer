@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5042a21d2d1a4ce49bc3b65339db29a6
+timeCreated: 1484537144
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - LineComponent: {instanceID: 0}
+  - ScorePopupPrefab: {fileID: 1000010662205680, guid: 5157610b271580d47b7c3183cc1d622a,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

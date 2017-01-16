@@ -6,7 +6,6 @@ using DG.Tweening;
 public class AudioController : MonoBehaviour
 {
     public AudioSource musicBus;
-//    public AudioSource[] effectBus;
     public AudioSource dynamicBus;
 
 	protected List<AudioSource> sfxBusses; 
@@ -64,7 +63,7 @@ public class AudioController : MonoBehaviour
 
 	}
 
-    IEnumerator CheckForEnd(AudioSource source, AudioClip next, bool loop)
+    protected IEnumerator CheckForEnd(AudioSource source, AudioClip next, bool loop)
     {
         yield return new WaitUntil(() => !source.isPlaying);
         source.clip = next;
@@ -136,5 +135,66 @@ public class AudioController : MonoBehaviour
 				return sfxBusses[i];
 		}
 		return null;
+	}
+
+	public void PlayStarObtainedSFX(int starCount)
+	{
+		Debug.Log(starCount);
+		if (starCount == 2)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood01);
+		}
+		else if (starCount == 3)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood02);
+		}
+		else if (starCount == 4)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood03);
+		}
+		else if (starCount == 5)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood04);
+		}
+		else if (starCount == 6)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood05);
+		}
+		else if (starCount == 7)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood06);
+		}
+		else if (starCount == 8)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood07);
+		}
+		else if (starCount == 9)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood08);
+		}
+		else if (starCount == 10)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood09);
+		}
+		else if (starCount == 11)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood10);
+		}
+		else if (starCount == 12)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood11);
+		}
+		else if (starCount == 13)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood12);
+		}
+		else if (starCount == 14)
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood13);
+		}
+		else
+		{
+			PlaySfx(SoundBank.SoundEffects.StarGood14);
+		}
 	}
 }

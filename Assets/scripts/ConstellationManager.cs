@@ -10,41 +10,44 @@ public class ConstellationManager : MonoBehaviour
 
     [Header("Constellation Things")]
     public Transform ConstellationDisplayParent;
+
+	[Header("Constellation Naming")]
     public TextAsset ConstellationNounsText;
     public TextAsset ConstellationAdjectivesText;
     protected string[] ConstellationNouns;
     protected string[] ConstellationAdjectives;
+
+	[Header("Constellation Data")]
     public ConstellationsData ConstellationData;
+
+	//Colors
     protected Color ConstellationBackgroundColor = new Color(1, 1, 1, 0.3f);
     protected Color ConstellationDisplayBackgroundColor = new Color(1, 1, 1, 0.8f);
 
     [Header("Scene Stuff")]
     public GameObject LinkPrefab;
-    public Transform StarLinkParent;
     protected float Speed = 2;
 
+	//Invincibility
     protected float InvincibilityCountdown = 0f;
     protected float InvincibiltyCountdownMax = 1f;
-
-    protected List<GameData.Constellation> Constellations;
-    protected Dictionary<Guid, GameData.Star> Stars;
-    protected Guid? LastStarId;
-    protected List<GameData.Link> Links;
-
-    public GameObject player;
-
-    public GameObject starHitCometParticle;
-
-    //added by Logan
-    public GameObject scorePopup;//for the whole constellation
+  
+	[Header("Prefabs")]
+	//added by Logan
+	public GameObject starHitCometParticle;
+	public GameObject scorePopup;//for the whole constellation
     public GameObject linkScorePopup;
 
+	//CONSTELLATION MANAGEMENT
+	protected List<Constellation> Constellations;
+	protected Constellation CurrentConstellation;
+	protected Guid? LastStarId;
 
-    void Awake()
+	void Awake()
     {
         Instance = this;
-        Stars = new Dictionary<Guid, GameData.Star>();
-        Links = new List<GameData.Link>();
+        //Stars = new Dictionary<Guid, Star>();
+        //Links = new List<StarLink>();
         LastStarId = null;
 
         ConstellationNameSetup();
@@ -54,258 +57,153 @@ public class ConstellationManager : MonoBehaviour
 
     void Start()
     {
-        Constellations = new List<GameData.Constellation>();
+        Constellations = new List<Constellation>();
     }
 
-    protected void CheckLink(GameData.Link link)
+    public int AddStar(Star star)
     {
-        RaycastHit hit;
+		if (CurrentConstellation == null)
+		{
+			CreateConstellation();
+		}
 
-        if (Physics.Linecast(link.StartPos, link.EndPos, out hit))
-        {
-            if (hit.transform.gameObject.name.Contains("Player"))
-            {
-                BreakConstellation();
-            }
-        }
-    }
-
-    public int AddStar(GameData.Star star)
-    {
         //If star not already stored
-        if (!Stars.ContainsKey(star.StarId))
+        if (!CurrentConstellation.ContainsStar(star.StarId))
         {
-            Stars.Add(star.StarId, star);
-
-            if (Stars.Count == 1)
-            {
-                AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood00);
-            }
-
-            star.Controller.gameObject.GetComponent<StarController>().starScorePopup.GetComponent<Renderer>().enabled = true;
-            star.Controller.gameObject.GetComponent<StarController>().starScorePopup.GetComponent<Animator>().enabled = true;
+            CurrentConstellation.AddStar(star.StarId, star);
+            star.Controller.starScorePopup.GetComponent<Renderer>().enabled = true;
+            star.Controller.starScorePopup.GetComponent<Animator>().enabled = true;
         }
 
         //There is a last star
         if (LastStarId != null)
         {
-            GameData.Star lastStar = Stars[(Guid)LastStarId];
+            Star lastStar = CurrentConstellation.GetStar((Guid)LastStarId);
 
+			Debug.Log("Last Star:" + lastStar.StarId);
+			Debug.Log("Star: " + star.StarId);
 
+			//Play "Star Obtained" sfx
+			if (lastStar != star)
+			{
+				AudioController.Instance.PlayStarObtainedSFX(CurrentConstellation.StarCount);
+			}
 
-            //Is not currently linked to star
-            if (!lastStar.LinkedStars.Contains(star.StarId) || !star.LinkedStars.Contains(lastStar.StarId))
+			//Is not currently linked to star
+			if (!lastStar.IsLinkedToStar(star.StarId) || !star.IsLinkedToStar(lastStar.StarId))
             {
-
-                //Error Checking - make sure links are being properly linked to both stars
-                if (lastStar.LinkedStars.Contains(star.StarId) != star.LinkedStars.Contains(lastStar.StarId))
-                    Debug.Log("Previous Linkes weren't properly created");
-
-                //Link Stars to Eachother
-                if (!lastStar.LinkedStars.Contains(star.StarId))
-                    lastStar.LinkedStars.Add(star.StarId);
-                if (!star.LinkedStars.Contains(lastStar.StarId))
-                    star.LinkedStars.Add(lastStar.StarId);
-
-                //Create Link
-                var link = new GameData.Link();
-                link.StarIds.Add(lastStar.StarId);
-                link.StarIds.Add(star.StarId);
-
-
-                //Create Link Object
-                var linkObject = Instantiate(LinkPrefab);
-                var line = linkObject.GetComponent<LineRenderer>();
-                line.useWorldSpace = false;
-
-
-
-                if (StarLinkParent != null)
-                {
-                    linkObject.transform.SetParent(StarLinkParent);
-                    linkObject.transform.localScale = Vector3.one;
-                }
-
-
-
-                link.LineComponent = line;
-                link.StartPos = lastStar.Position;
-                link.EndPos = star.Position;
-                line.SetPosition(0, new Vector3(link.StartPos.x, link.StartPos.y, 1f));
-                line.SetPosition(1, new Vector3(link.EndPos.x, link.EndPos.y, 1f));
-
-                //score popup between links
-                if (Stars.Count > 1)
-                {
-                    if (link.StartPos != link.EndPos)//don't spawn a popup score unless there is actually a link
-                    {
-                        Vector3 scorePos = link.StartPos + (link.EndPos - link.StartPos) / 2;
-                        scorePos = new Vector3(scorePos.x + 0.25f, scorePos.y, scorePos.z);
-                        //scorePos = scorePos + link.LineComponent.gameObject.transform.up;
-                        //print("popup");
-                        GameObject a = Instantiate(linkScorePopup, scorePos, Quaternion.identity) as GameObject;
-                        a.transform.parent = linkObject.transform;
-                    }
-                }
-
-                Links.Add(link);
+				CreateLink(CurrentConstellation, star, lastStar);
                 InvincibilityCountdown = InvincibiltyCountdownMax;
 
-                if (Stars.Count > 1)//1st star should not make a link sound
+                if (CurrentConstellation.StarCount > 1 && lastStar != star)
                 {
-                    if (lastStar != star)//make sure you're not running into the same star you're already attached to
-                    {
-                        AudioController.Instance.PlaySfx(SoundBank.SoundEffects.NewLink);
-                    }
-                }
-            }
-
-
-
-
-
-            if (lastStar != star)
-            {
-                Debug.Log(Stars.Count);
-                if (Stars.Count == 2)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood01);
-                }
-                else if (Stars.Count == 3)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood02);
-                }
-                else if (Stars.Count == 4)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood03);
-                }
-                else if (Stars.Count == 5)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood04);
-                }
-                else if (Stars.Count == 6)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood05);
-                }
-                else if (Stars.Count == 7)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood06);
-                }
-                else if (Stars.Count == 8)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood07);
-                }
-                else if (Stars.Count == 9)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood08);
-                }
-                else if (Stars.Count == 10)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood09);
-                }
-                else if (Stars.Count == 11)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood10);
-                }
-                else if (Stars.Count == 12)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood11);
-                }
-                else if (Stars.Count == 13)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood12);
-                }
-                else if (Stars.Count == 14)
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood13);
-                }
-                else
-                {
-                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.StarGood14);
+					//1st star should not make a link sound
+					//make sure you're not running into the same star you're already attached to
+                    AudioController.Instance.PlaySfx(SoundBank.SoundEffects.NewLink);
                 }
             }
         }
 
         LastStarId = star.StarId;
-		return Stars.Count;
+		return CurrentConstellation.StarCount;
     }
 
-    public bool CompleteConstellation()
+	protected void CreateConstellation()
+	{
+		CurrentConstellation = new Constellation();
+		CurrentConstellation.ConstellationParent = new GameObject("Constellation");
+	}
+
+	public void CreateLink(Constellation constellation, Star star, Star lastStar)
+	{
+		//Error Checking - make sure links are being properly linked to both stars
+		if (lastStar.IsLinkedToStar(star.StarId) != star.IsLinkedToStar(lastStar.StarId))
+			Debug.Log("Previous Linkes weren't properly created");
+
+		//Create Link Object
+		GameObject linkObject = Instantiate(LinkPrefab);
+		StarLink starLink = new StarLink(linkObject, star.Position, lastStar.Position);
+		linkObject.transform.SetParent(CurrentConstellation.ConstellationParent.transform);
+		constellation.AddStarLink(starLink.LinkId, starLink);
+
+		//Link Stars to Eachother
+		lastStar.AddStarLink(star.StarId, starLink.LinkId);
+		star.AddStarLink(lastStar.StarId, starLink.LinkId);
+
+		//Score popup between links
+		if (CurrentConstellation.StarCount > 1)
+		{
+			if (lastStar.Position != star.Position)//don't spawn a popup score unless there is actually a link
+			{
+				Vector3 scorePos = lastStar.Position + (star.Position - lastStar.Position) / 2;
+				scorePos = new Vector3(scorePos.x + 0.25f, scorePos.y, scorePos.z);
+				GameObject a = Instantiate(linkScorePopup, scorePos, Quaternion.identity) as GameObject;
+				a.transform.parent = linkObject.transform;
+			}
+		}
+	}
+
+	public bool CompleteConstellation()
     {
-        Debug.Log("Complete Constellation");
-        if (Stars.Count >= GameData.minimumStars)
+        if (CurrentConstellation.StarCount >= GameData.minimumStars)
         {
             LastStarId = null;
-            var constellation = new GameData.Constellation();
-            constellation.Stars = new Dictionary<Guid, GameData.Star>(Stars);
-            constellation.Links = new List<GameData.Link>(Links);
+			Constellation completedConstellation = CurrentConstellation;
+			CurrentConstellation = null;
 
-            GameObject constellationParent = new GameObject("Constellation");
-            constellation.ConstellationParent = constellationParent;
-
+			//Create Background
             GameObject constellationBackgorund = new GameObject("Background");
-            constellationBackgorund.transform.SetParent(constellationParent.transform);
-            constellationBackgorund.transform.position = GetAverageStarPosition(new List<GameData.Star>(constellation.Stars.Values).ToArray());
+            constellationBackgorund.transform.SetParent(completedConstellation.ConstellationParent.transform);
+            constellationBackgorund.transform.position = GetAverageStarPosition(completedConstellation.GetAllStars());
             SpriteRenderer bgSpriteRenderer = constellationBackgorund.AddComponent<SpriteRenderer>();
             bgSpriteRenderer.sprite = GetRandomConstellationImage();
             bgSpriteRenderer.color = ConstellationBackgroundColor;
 
-
-            string constellationName = GenerateConstellationName(Stars.Keys.Count);
-            constellation.ConstellationName = constellationName;
+			//Create Name
+            string constellationName = GenerateConstellationName(completedConstellation.StarCount);
+			completedConstellation.ConstellationName = constellationName;
             Debug.Log("Constellation Name:" + constellationName);
 
-
-            var keys = new List<Guid>(constellation.Stars.Keys);
+			//Move stars to separate layer and set up for comet collisioin
+			List<Guid> keys = completedConstellation.GetStarIds();
             for (int i = 0; i < keys.Count; i++)
             {
                 Guid key = keys[i];
-                GameData.Star star = constellation.Stars[key];
+                Star star = completedConstellation.GetStar(key);
                 star.Controller.UpdateLayerToSendStar();
-                star.Controller.starTriggered.AddListener(() => StarToCometCollision(constellation, key));
-                star.Controller.gameObject.transform.SetParent(constellationParent.transform);
-            }
-
-            for (int i = 0; i < constellation.Links.Count; i++)
-            {
-                constellation.Links[i].LineComponent.gameObject.transform.SetParent(constellationParent.transform);
+                star.Controller.starTriggered.AddListener(() => StarToCometCollision(completedConstellation, key));
+                star.Controller.gameObject.transform.SetParent(completedConstellation.ConstellationParent.transform);
             }
 
             //Send data to Visualization and score
             //Score
             int score = GameData.scorePerStar;
-            float totalConnections = 1 + (GameData.scoreConnectionMulti * constellation.Links.Count);
-            float totalStars = 1 + (GameData.constSizeMulti * constellation.Stars.Count);
+            float totalConnections = 1 + (GameData.scoreConnectionMulti * completedConstellation.LinkCount);
+            float totalStars = 1 + (GameData.constSizeMulti * completedConstellation.StarCount);
             int myScore = (int)((score * totalConnections) * totalStars);//calculate the score
             GameController.TriggerAddScore(myScore);//send it
 
-            Vector3 myPos = new Vector3(0, 0, 0);
-
-            /*for (int b = 0; b < constellation.Stars.Count; b++)
-            {
-                myPos = new Vector3(myPos.x - constellation.Stars[b].Position.x, myPos.y - constellation.Stars[b].Position.y, myPos.z - constellation.Stars[b].Position.z);   
-            }*/
-
+			//Spawn Score Popups
             //added by Logan
-            GameObject a = Instantiate(scorePopup, myPos, Quaternion.identity) as GameObject;//spawn score text and position it in the middle of the constellation
+            GameObject a = Instantiate(scorePopup, Vector3.zero, Quaternion.identity) as GameObject;//spawn score text and position it in the middle of the constellation
             a.GetComponent<TextMesh>().text = (myScore).ToString();//make it the correct score amount
 
-            UiController.TriggerScoreData(constellation.Stars.Count, constellation.Links.Count, score, constellationName);
+			//Different Score than above? Re-Evaluate
+            UiController.TriggerScoreData(completedConstellation.StarCount, completedConstellation.LinkCount, score, constellationName);
 
-            Stars.Clear();
-            Links.Clear();
+			//Constellation Created Event
+            UiController.TriggerConstellationEvent(completedConstellation.ConstellationParent);
 
-            UiController.TriggerConstellationEvent(constellationParent);
             //Create Mini
-            CreateDisplayConstellation(constellation);
+            CreateDisplayConstellation(completedConstellation);
 
-            Tweener tween = constellation.ConstellationParent.transform.DOMoveY(GameData.cometStartY * 2, GameData.sendSpeed).SetEase(Ease.InOutBack);
-            tween.OnComplete(() => DestroyConstellation(constellation));
+			//Throw Constellation Toward Comet
+            Tweener tween = completedConstellation.ConstellationParent.transform.DOMoveY(GameData.cometStartY * 2, GameData.sendSpeed).SetEase(Ease.InOutBack);
+            tween.OnComplete(() => DestroyConstellation(completedConstellation));
 
-
+			//Play SFX
             AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationComplete);
             AudioController.Instance.PlayAtEnd(SoundBank.SoundEffects.ConstellationComplete, SoundBank.SoundEffects.ConstellationSent, false);
-            //StartCoroutine(ConstellationFlyAway(constellation));
 
             return true;
         }
@@ -315,96 +213,95 @@ public class ConstellationManager : MonoBehaviour
         }
     }
 
-    protected void BreakStarLink(GameData.Constellation constellation, Guid starId)
+    protected void BreakStarLinks(Constellation constellation, Guid starId)
     {
-        var star = constellation.Stars[starId];
+		var star = constellation.GetStar(starId);
 
-        //Remove star from linked stars
-        for (int i = 0; i < star.LinkedStars.Count; i++)
+		//Remove star from linked stars
+		List<Guid> linkedStars = star.GetLinkedStarIds();
+        for (int i = 0; i < linkedStars.Count; i++)
         {
-            if (constellation.Stars.ContainsKey(star.LinkedStars[i]))
-            {
-                GameData.Star linkedStar = constellation.Stars[star.LinkedStars[i]];
-                linkedStar.LinkedStars.Remove(star.StarId);
-            }
+			Star linkedStar = constellation.GetStar(linkedStars[i]);
+			if (linkedStar != null)
+			{
+				//Destroy Link Object
+				Guid? linkId = star.GetStarLinkId(linkedStars[i]);
+				if (linkId != null)
+				{
+					StarLink link = constellation.GetStarLink((Guid)linkId);
+					if (link != null)
+					{
+						Destroy(link.LineGameObject);
+					}
+
+					//Remove star from reference
+					linkedStar.RemoveLinkedStar(star.StarId);
+				}
+			}
         }
 
-        //Get all involved links
-        List<GameData.Link> removedLinks = new List<GameData.Link>();
-        for (int i = 0; i < constellation.Links.Count; i++)
-        {
-            if (constellation.Links[i].StarIds.Contains(star.StarId))
-                removedLinks.Add(constellation.Links[i]);
-        }
+		//Return to original layer
+		star.Controller.UpdateLayerToStar();
 
-        //Destroy Link
-        for (int i = 0; i < removedLinks.Count; i++)
-        {
-            GameData.Link link = removedLinks[i];
-            constellation.Stars[link.StarIds[0]].LinkedStars.Remove(constellation.Stars[link.StarIds[1]].StarId);
-            constellation.Stars[link.StarIds[1]].LinkedStars.Remove(constellation.Stars[link.StarIds[0]].StarId);
-            Destroy(link.LineComponent.gameObject);
-            constellation.Links.Remove(link);
-        }
+		//Remove star from constellation
+		constellation.RemoveStar(starId);
 
-        //Return to original layer
-        star.Controller.UpdateLayerToStar();
+		PooledObject pool = star.Controller.gameObject.GetComponent<PooledObject>();
+		pool.ReturnToPool();
+	}
 
-        //Remove star from constellation
-        constellation.Stars.Remove(starId);
-        PooledObject pool = star.Controller.gameObject.GetComponent<PooledObject>();
-        pool.ReturnToPool();
-    }
-
-    protected void BreakLink(GameData.Link link)
-    {
-        //Unlink Stars
-        Stars[link.StarIds[0]].LinkedStars.Remove(link.StarIds[1]);
-        Stars[link.StarIds[1]].LinkedStars.Remove(link.StarIds[0]);
-
-        //Delete Link
-        Destroy(link.LineComponent.gameObject);
-
-        CheckStrandedStar(Stars[link.StarIds[0]]);
-        CheckStrandedStar(Stars[link.StarIds[1]]);
-    }
-
-    public void BreakConstellation()
+    public void BreakCurrentConstellation()
     {
         LastStarId = null;
 
-        //Release Stars
-        var keys = new List<Guid>(Stars.Keys);
-        for (int i = 0; i < Stars.Count; i++)
-        {
-            Stars[keys[i]].Controller.StartMovement(1.4f);
-            Stars[keys[i]].Controller.FadeOutStar();
-            //Stars[keys[i]].Controller.Shrinkle();
-        }
+		if (CurrentConstellation != null)
+		{
+			//Release Stars
+			var keys = CurrentConstellation.GetStarIds();
+			for (int i = 0; i < keys.Count; i++)
+			{
+				Star star = CurrentConstellation.GetStar(keys[i]);
+				star.Controller.StartMovement(1.4f);
+				star.Controller.FadeOutStar();
+			}
 
-        //Destroy Links
-        for (int i = 0; i < Links.Count; i++)
-        {
-            var link = Links[i];
-            Destroy(link.LineComponent.gameObject);
-        }
+			//Destroy Links
+			DestroyConstellationLinks(CurrentConstellation);
 
-        Stars = new Dictionary<Guid, GameData.Star>();
-        Links = new List<GameData.Link>();
-        AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationBroken);
-
+			AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationBroken);
+			CurrentConstellation = null;
+		}
     }
 
-    protected void CheckStrandedStar(GameData.Star star)
-    {
-        if (star.LinkedStars.Count <= 0)
-        {
-            star.Controller.StartMovement();
-            Stars.Remove(star.StarId);
-        }
-    }
+	protected void DestroyConstellation(Constellation constellation)
+	{
+		//Destroy Stars
+		List<Guid> starIds = constellation.GetStarIds();
+		for (int i = 0; i < starIds.Count; i++)
+		{
+			Star star = constellation.GetStar(starIds[i]);
+			if (star.Controller != null)
+			{
+				Destroy(star.Controller.gameObject);
+			}
+		}
 
-    protected IEnumerator ConstellationFlyAway(GameData.Constellation constellation)
+		//Destroy Links
+		DestroyConstellationLinks(constellation);
+	}
+
+	protected void DestroyConstellationLinks(Constellation constellation)
+	{
+		//Destroy Links
+		var linkKeys = CurrentConstellation.GetStarLinkIds();
+		for (int i = 0; i < linkKeys.Count; i++)
+		{
+			StarLink link = CurrentConstellation.GetStarLink(linkKeys[i]);
+			Destroy(link.LineGameObject);
+		}
+	}
+
+	protected IEnumerator ConstellationFlyAway(Constellation constellation)
     {
         var yDisplace = 0f;
         while (yDisplace < 100f && constellation.ConstellationParent != null)
@@ -419,44 +316,23 @@ public class ConstellationManager : MonoBehaviour
         DestroyConstellation(constellation);
     }
 
-    protected void DestroyConstellation(GameData.Constellation constellation)
+    protected void StarToCometCollision(Constellation constellation, Guid starId)
     {
-        //Destroy Stars
-        var stars = new List<GameData.Star>(constellation.Stars.Values);
-        for (int i = 0; i < stars.Count; i++)
+        if (constellation.ContainsStar(starId))
         {
-            var star = stars[i];
-            if (star.Controller != null)
-            {
-                Destroy(star.Controller.gameObject);
-            }
-        }
-
-        //Destroy Links
-        for (int i = 0; i < constellation.Links.Count; i++)
-        {
-            var link = constellation.Links[i];
-            Destroy(link.LineComponent.gameObject);
-        }
-    }
-
-    protected void StarToCometCollision(GameData.Constellation constellation, Guid starId)
-    {
-        if (constellation.Stars.ContainsKey(starId))
-        {
-            GameData.Star star = constellation.Stars[starId];
+            Star star = constellation.GetStar(starId);
 
             //Explosion
-            Vector3 particlePosition = constellation.Stars[starId].Controller.gameObject.transform.position;
+            Vector3 particlePosition = star.Controller.gameObject.transform.position;
             particlePosition.y += 1f;
             Instantiate(starHitCometParticle, particlePosition, Quaternion.identity);
 
             //Pushback
-            float strength = GameData.baseStrength + (GameData.strengthMultiplier * star.LinkedStars.Count);
+            float strength = GameData.baseStrength + (GameData.strengthMultiplier * star.LinkCount);
             GameController.TriggerCometCollision(strength, GameData.cometCollisionSpeed);
 
-            BreakStarLink(constellation, starId);
-            if (constellation.Stars.Count <= 0)
+            BreakStarLinks(constellation, starId);
+            if (constellation.StarCount <= 0)
             {
                 Destroy(constellation.ConstellationParent);
             }
@@ -465,14 +341,14 @@ public class ConstellationManager : MonoBehaviour
         }
     }
 
-    protected Vector2 GetAverageStarPosition(GameData.Star[] stars)
+    protected Vector2 GetAverageStarPosition(List<Star> stars)
     {
         float minX = stars[0].Position.x;
         float minY = stars[0].Position.y;
         float maxX = stars[0].Position.x;
         float maxY = stars[0].Position.y;
 
-        for (int i = 1; i < stars.Length; i++)
+        for (int i = 1; i < stars.Count; i++)
         {
             var starPos = stars[i].Position;
             minX = Mathf.Min(minX, starPos.x);
@@ -514,7 +390,7 @@ public class ConstellationManager : MonoBehaviour
 
     #region Workshop
 
-    protected void CreateDisplayConstellation(GameData.Constellation original)
+    protected void CreateDisplayConstellation(Constellation original)
     {
         //Remove previous constellations
         for (int i = 0; i < ConstellationDisplayParent.childCount; i++)
@@ -544,7 +420,7 @@ public class ConstellationManager : MonoBehaviour
         SpriteRenderer background = duplicateConstellation.transform.FindChild("Background").GetComponent<SpriteRenderer>();
         background.color = ConstellationDisplayBackgroundColor;
 
-        Vector3 center = GetAverageStarPosition(new List<GameData.Star>(original.Stars.Values).ToArray());
+        Vector3 center = GetAverageStarPosition(original.GetAllStars());
 
         duplicateConstellation.transform.SetParent(ConstellationDisplayParent);
         duplicateConstellation.transform.localScale = Vector3.one;

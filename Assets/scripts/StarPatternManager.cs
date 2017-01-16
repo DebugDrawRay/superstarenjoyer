@@ -92,9 +92,6 @@ public class StarPatternManager : MonoBehaviour {
 
         ActiveStars = GameController.GetComponent<StarManager>().ActiveStars;
         InactiveStars = GameController.GetComponent<StarManager>().InactiveStars;
-
-
-
 	}
 	
 	// Update is called once per frame
@@ -175,7 +172,10 @@ public class StarPatternManager : MonoBehaviour {
     //spawns a new object when there's not any inactive pooled objects to use
     void AddToPool(Vector3 pos, Quaternion rot, Vector3 scale, float customSpeed, Vector3 dir, int type)
     {
-        GameObject a = new GameObject();
+		//From Amanda:
+		//You were creating a bunch of unnamed gameobjects
+		//When you use new gameobject, it creates a new one in scene.
+		GameObject a = null;
 
         if (type == 0)
         {
@@ -198,20 +198,26 @@ public class StarPatternManager : MonoBehaviour {
             a = Instantiate(StarTypesAvailable[3], pos, rot, InactiveStars.transform) as GameObject;
         }
 
-        a.transform.localScale = new Vector3(StarScale, StarScale, StarScale);
-        a.name = "Star";
-        a.GetComponent<PooledObject>().MyParent = InactiveStars;
+		if (a != null)
+		{
+			a.transform.localScale = new Vector3(StarScale, StarScale, StarScale);
+			a.name = "Star";
+			a.GetComponent<PooledObject>().MyParent = InactiveStars;
 
-        a.GetComponent<StarController>().usesCustomSpeed = true;
-        a.GetComponent<StarController>().customSpeed = customSpeed;
-        a.GetComponent<StarController>().customSpeedDirection = dir;
-        a.GetComponent<StarController>().RefreshCustomSpeedValues();
+			a.GetComponent<StarController>().usesCustomSpeed = true;
+			a.GetComponent<StarController>().customSpeed = customSpeed;
+			a.GetComponent<StarController>().customSpeedDirection = dir;
+			a.GetComponent<StarController>().RefreshCustomSpeedValues();
+		}
     }
 
     //moves an inactive pooled object to the appropriate place and then makes it set active
     void GetFromPool(Vector3 pos, Quaternion rot, Vector3 scale, float customSpeed, Vector3 dir, int type)
     {
-        GameObject thePooledObj = new GameObject();
+		//From Amanda:
+		//You were creating a bunch of unnamed gameobjects
+		//When you use new gameobject, it creates a new one in scene.
+		GameObject thePooledObj = null;
 
         //loop through all of the inactive stars and find one that is the type you need
         for (int i = 0; i < InactiveStars.transform.childCount; i++)
@@ -223,47 +229,50 @@ public class StarPatternManager : MonoBehaviour {
             }
             else if(type == 1)//Sphere Star
             {
-                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == GameData.StarType.Circle)
+                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == Star.StarType.Circle)
                 {
                     thePooledObj = InactiveStars.transform.GetChild(0).gameObject;
                 }
             }
             else if(type == 2)//Square Star
             {
-                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == GameData.StarType.Square)
+                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == Star.StarType.Square)
                 {
                     thePooledObj = InactiveStars.transform.GetChild(0).gameObject;
                 }
             }
             else if(type == 3)//Star Star
             {
-                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == GameData.StarType.Star)
+                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == Star.StarType.Star)
                 {
                     thePooledObj = InactiveStars.transform.GetChild(0).gameObject;
                 }
             }
             else if(type == 4)//Triangle Star
             {
-                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == GameData.StarType.Triangle)
+                if (InactiveStars.transform.GetChild(i).gameObject.GetComponent<StarController>().theStarType == Star.StarType.Triangle)
                 {
                     thePooledObj = InactiveStars.transform.GetChild(0).gameObject;
                 }
             }
         }
 
-        //GameObject thePooledObj = InactiveStars.transform.GetChild(0).gameObject;
-        thePooledObj.GetComponent<StarController>().starScorePopup.GetComponent<Renderer>().enabled = false;
-        thePooledObj.GetComponent<StarController>().starScorePopup.GetComponent<Animator>().enabled = false;
-        thePooledObj.transform.position = pos;
-        thePooledObj.transform.rotation = rot;
-        thePooledObj.transform.localScale = new Vector3(StarScale, StarScale, StarScale);
-        thePooledObj.transform.SetParent(ActiveStars.transform);
-        thePooledObj.GetComponent<StarController>().StartMovement();
+		if (thePooledObj != null)
+		{
+			//GameObject thePooledObj = InactiveStars.transform.GetChild(0).gameObject;
+			thePooledObj.GetComponent<StarController>().starScorePopup.GetComponent<Renderer>().enabled = false;
+			thePooledObj.GetComponent<StarController>().starScorePopup.GetComponent<Animator>().enabled = false;
+			thePooledObj.transform.position = pos;
+			thePooledObj.transform.rotation = rot;
+			thePooledObj.transform.localScale = new Vector3(StarScale, StarScale, StarScale);
+			thePooledObj.transform.SetParent(ActiveStars.transform);
+			thePooledObj.GetComponent<StarController>().StartMovement();
 
-        thePooledObj.GetComponent<StarController>().usesCustomSpeed = true;
-        thePooledObj.GetComponent<StarController>().customSpeed = customSpeed;
-        thePooledObj.GetComponent<StarController>().customSpeedDirection = dir;
-        thePooledObj.GetComponent<StarController>().RefreshCustomSpeedValues();
+			thePooledObj.GetComponent<StarController>().usesCustomSpeed = true;
+			thePooledObj.GetComponent<StarController>().customSpeed = customSpeed;
+			thePooledObj.GetComponent<StarController>().customSpeedDirection = dir;
+			thePooledObj.GetComponent<StarController>().RefreshCustomSpeedValues();
+		}
     }
 
     /*patterns. 0 = random, 1 = sphere, 2 = square, 3 = star star, 4 = triangle************/

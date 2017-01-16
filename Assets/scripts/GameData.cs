@@ -4,55 +4,6 @@ using System.Collections.Generic;
 
 public static class GameData
 {
-	public enum StarType { Star, Circle, Triangle, Square, None };
-
-	[Serializable]
-	public class Star
-	{
-		//Data Objects
-		public Guid StarId;
-		public StarType Type;
-		public Vector3 Position;
-		public List<Guid> LinkedStars;
-
-		//Game Objects
-		[NonSerialized]
-		public StarController Controller;
-
-		public Star(StarController controller = null)
-		{
-			StarId = Guid.NewGuid();
-			LinkedStars = new List<Guid>();
-			Controller = controller;
-		}
-	}
-
-	[Serializable]
-	public class Link
-	{
-		//Data Objects
-		public List<Guid> StarIds;
-		public Vector3 StartPos;
-		public Vector3 EndPos;
-
-		//Game Objects
-		public LineRenderer LineComponent;
-
-		public Link()
-		{
-			StarIds = new List<Guid>(); 
-		}
-	}
-
-	public class Constellation
-	{
-		public string ConstellationName;
-		public GameObject ConstellationParent;
-		public Dictionary<Guid, Star> Stars;
-		public List<Link> Links;
-		public Sprite Background;
-	}
-
     //Constants 
     public const float cometStartY = 10;
     public const float cometDest = -5f;

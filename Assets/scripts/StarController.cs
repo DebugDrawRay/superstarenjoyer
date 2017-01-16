@@ -6,7 +6,7 @@ public class StarController : MonoBehaviour
 {
 	//public enum starType;
 
-	public GameData.StarType theStarType;
+	public Star.StarType theStarType;
 	public UnityEvent starTriggered;
 	public float destroyStarWhenBelowThisYValue;
     public float destroyStarWhenAboveThisYValue;
@@ -17,7 +17,7 @@ public class StarController : MonoBehaviour
     public Vector3 customSpeedDirection;
 
 	[HideInInspector]
-	public GameData.Star starData;
+	public Star starData;
 
 	public float shrinkSpeed;
 	public bool doShrink;
@@ -46,7 +46,7 @@ public class StarController : MonoBehaviour
 
 	void Awake()
 	{
-		starData = new GameData.Star(this);
+		starData = new Star(this);
 		starRenderer = GetComponentInChildren<MeshRenderer>();
 		starMaterial = GetComponentInChildren<MeshRenderer>().material;
 
