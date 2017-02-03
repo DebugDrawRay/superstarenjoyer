@@ -46,13 +46,9 @@ public class ConstellationManager : MonoBehaviour
 	void Awake()
     {
         Instance = this;
-        //Stars = new Dictionary<Guid, Star>();
-        //Links = new List<StarLink>();
         LastStarId = null;
 
         ConstellationNameSetup();
-
-        print(gameObject.name);
     }
 
     void Start()
@@ -75,19 +71,10 @@ public class ConstellationManager : MonoBehaviour
             star.Controller.starScorePopup.GetComponent<Animator>().enabled = true;
         }
 
-        //There is a last star
-        if (LastStarId != null)
+        //There is a last star and it's not the same as the last star
+        if (LastStarId != null && star.StarId != LastStarId)
         {
             Star lastStar = CurrentConstellation.GetStar((Guid)LastStarId);
-
-			Debug.Log("Last Star:" + lastStar.StarId);
-			Debug.Log("Star: " + star.StarId);
-
-			//Play "Star Obtained" sfx
-			if (lastStar != star)
-			{
-				AudioController.Instance.PlayStarObtainedSFX(CurrentConstellation.StarCount);
-			}
 
 			//Is not currently linked to star
 			if (!lastStar.IsLinkedToStar(star.StarId) || !star.IsLinkedToStar(lastStar.StarId))
@@ -102,9 +89,26 @@ public class ConstellationManager : MonoBehaviour
                     AudioController.Instance.PlaySfx(SoundBank.SoundEffects.NewLink);
                 }
             }
+			else
+			{
+				Debug.Log("Stars were previously linked");
+			}
         }
+		else
+		{
+			if (LastStarId != null)
+			{
+				Debug.Log("Same star. No link");
+			}
+			else
+			{
+				Debug.Log("No last star. No link");
+			}
+		}
 
-        LastStarId = star.StarId;
+		AudioController.Instance.PlayStarObtainedSFX(CurrentConstellation.StarCount);
+
+		LastStarId = star.StarId;
 		return CurrentConstellation.StarCount;
     }
 
@@ -145,7 +149,7 @@ public class ConstellationManager : MonoBehaviour
 
 	public bool CompleteConstellation()
     {
-        if (CurrentConstellation.StarCount >= GameData.minimumStars)
+        if (CurrentConstellation != null && CurrentConstellation.StarCount >= GameData.minimumStars)
         {
             LastStarId = null;
 			Constellation completedConstellation = CurrentConstellation;
@@ -266,7 +270,8 @@ public class ConstellationManager : MonoBehaviour
 			}
 
 			//Destroy Links
-			DestroyConstellationLinks(CurrentConstellation);
+			//DestroyConstellationLinks(CurrentConstellation);
+			Destroy(CurrentConstellation.ConstellationParent);
 
 			AudioController.Instance.PlaySfx(SoundBank.SoundEffects.ConstellationBroken);
 			CurrentConstellation = null;
@@ -282,39 +287,16 @@ public class ConstellationManager : MonoBehaviour
 			Star star = constellation.GetStar(starIds[i]);
 			if (star.Controller != null)
 			{
-				Destroy(star.Controller.gameObject);
+				//Shouldn't be destroying them
+				//Destroy(star.Controller.gameObject);
+				star.Controller.gameObject.SetActive(false);
 			}
 		}
 
 		//Destroy Links
-		DestroyConstellationLinks(constellation);
+		//DestroyConstellationLinks(constellation);
+		Destroy(constellation.ConstellationParent);
 	}
-
-	protected void DestroyConstellationLinks(Constellation constellation)
-	{
-		//Destroy Links
-		var linkKeys = CurrentConstellation.GetStarLinkIds();
-		for (int i = 0; i < linkKeys.Count; i++)
-		{
-			StarLink link = CurrentConstellation.GetStarLink(linkKeys[i]);
-			Destroy(link.LineGameObject);
-		}
-	}
-
-	protected IEnumerator ConstellationFlyAway(Constellation constellation)
-    {
-        var yDisplace = 0f;
-        while (yDisplace < 100f && constellation.ConstellationParent != null)
-        {
-            var pos = constellation.ConstellationParent.transform.position;
-            pos.y += Time.deltaTime * Speed;
-            constellation.ConstellationParent.transform.position = pos;
-
-            yDisplace += Time.deltaTime * Speed;
-            yield return null;
-        }
-        DestroyConstellation(constellation);
-    }
 
     protected void StarToCometCollision(Constellation constellation, Guid starId)
     {
@@ -412,8 +394,10 @@ public class ConstellationManager : MonoBehaviour
             Destroy(starComp);
 
             var lineComp = child.GetComponentInChildren<LineRenderer>();
-            if (lineComp != null)
-                lineComp.SetWidth(0.1f, 0.1f);
+			if (lineComp != null)
+			{
+				lineComp.SetWidth(0.1f, 0.1f);
+			}
         }
 
         //Up opacity on background

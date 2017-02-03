@@ -37,7 +37,6 @@ public class Constellation
 
 	public void AddStar(Guid starId, Star star)
 	{
-		Debug.Log("Adding Star! " + starId + ", " + star.StarId + " to " + ConstellationId);
 		if (!Stars.ContainsKey(starId))
 		{
 			Stars.Add(starId, star);

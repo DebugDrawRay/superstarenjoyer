@@ -16,9 +16,9 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000012464883300}
+  - component: {fileID: 4000012464883300}
   m_Layer: 0
   m_Name: CometSpawn
   m_TagString: Untagged
@@ -31,15 +31,15 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000014116261094}
-  - 114: {fileID: 114000011840028696}
-  - 114: {fileID: 114000010083928252}
-  - 114: {fileID: 114000010813693184}
-  - 114: {fileID: 114000012359162786}
-  - 114: {fileID: 114000011350973540}
-  - 114: {fileID: 114000012969979918}
+  - component: {fileID: 4000014116261094}
+  - component: {fileID: 114000011840028696}
+  - component: {fileID: 114000010083928252}
+  - component: {fileID: 114000010813693184}
+  - component: {fileID: 114000012359162786}
+  - component: {fileID: 114000012969979918}
+  - component: {fileID: 114000011350973540}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -52,9 +52,9 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000012405734070}
+  - component: {fileID: 4000012405734070}
   m_Layer: 0
   m_Name: PlayerSpawn
   m_TagString: Untagged
@@ -71,10 +71,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -20, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000014116261094}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4000012464883300
 Transform:
   m_ObjectHideFlags: 1
@@ -84,10 +84,10 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000014116261094}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4000014116261094
 Transform:
   m_ObjectHideFlags: 1
@@ -97,12 +97,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000012405734070}
   - {fileID: 4000012464883300}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114000010083928252
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -121,7 +121,6 @@ MonoBehaviour:
   comet: {fileID: 1000010731242480, guid: eb3739344bb528140ba6c428fa88dbfd, type: 2}
   cometSpawn: {fileID: 4000012464883300}
   frozen: 0
-  starMan: {fileID: 114000012969979918}
   spawnComet: 1
 --- !u!114 &114000010813693184
 MonoBehaviour:
@@ -141,12 +140,11 @@ MonoBehaviour:
     type: 3}
   ConstellationData: {fileID: 11400000, guid: 781cde6916bb12e4eaf812656ab0bcfe, type: 2}
   LinkPrefab: {fileID: 191624, guid: c74daa68dcd86564e9f0953017e146d5, type: 2}
-  StarLinkParent: {fileID: 0}
-  player: {fileID: 0}
   starHitCometParticle: {fileID: 1000013988914792, guid: 7a02555c06b70004fb2e2e2a7fa0e2c3,
     type: 2}
   scorePopup: {fileID: 1000010131516814, guid: ff07c0391a969f84d8fcc521da152bea, type: 2}
-  linkScorePopup: {fileID: 0}
+  linkScorePopup: {fileID: 1000010662205680, guid: 5157610b271580d47b7c3183cc1d622a,
+    type: 2}
 --- !u!114 &114000011350973540
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -221,17 +219,20 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011565247668}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfbb2857d1e7e0041a5fbb4a724a50f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActiveStars: {fileID: 0}
-  InactiveStars: {fileID: 0}
   StarsToSpawn:
   - {fileID: 1000013249568514, guid: 1bdfa4018317c474fa8f809b498e6439, type: 2}
   - {fileID: 1000013448462480, guid: c66a85e14111e9c42b1df12bc1d10d83, type: 2}
   - {fileID: 1000013361512614, guid: e84f55e44076051459578d604b5fdeac, type: 2}
   - {fileID: 1000013985736620, guid: f8ccebe940acaa94d980aff2bb0c558f, type: 2}
-  - {fileID: 1000010891871810, guid: 5d80c9f7563482c46afd690053d99418, type: 2}
+  PatternsToSpawn:
+  - {fileID: 1362509739878996, guid: cb5b4235875f63c4dab2931518f90a1b, type: 2}
+  - {fileID: 1962920711847716, guid: 2c3e2d95227a4684693694fa0c6f727b, type: 2}
+  - {fileID: 1289485402886930, guid: 35dc0c38bbfca4a49b6e57fcd8c3eda9, type: 2}
+  - {fileID: 1899649954750356, guid: f1ff148afd25d3a4b857fdf4d98221e4, type: 2}
+  NumberOfSpawnColumns: 8
   starScale: 0.65

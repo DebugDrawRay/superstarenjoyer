@@ -24,7 +24,6 @@ public class ControllerInputManager : MonoBehaviour
 	protected IEnumerator StopVibration(InputDevice controller, float time)
 	{
 		yield return new WaitForSeconds(time);
-		Debug.Log("Stopping Vibration");
 		controller.StopVibration();
 	}
 }

@@ -33,6 +33,11 @@ public class Star : MonoBehaviour
 		Controller = controller;
 	}
 
+	public void ClearLinks()
+	{
+		StarToLink = new Dictionary<Guid, Guid>();
+	}
+
 	public List<Guid> GetLinkedStarIds()
 	{
 		return new List<Guid>(StarToLink.Keys);

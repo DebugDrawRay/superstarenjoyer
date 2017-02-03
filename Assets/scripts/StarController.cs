@@ -58,17 +58,26 @@ public class StarController : MonoBehaviour
 		
 		starMaterial.SetFloat("_Mode", 3f);
 		starMaterial.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-	}
 
-	// Use this for initialization
-	void Start()
-	{
-        
 		starSpeed = Random.Range(GameData.minStarSpeed, GameData.maxStarSpeed);
-        StartMovement();
 	}
 
-	// Update is called once per frame
+	void OnEnable()
+	{
+		properties.SetColor("_Color", startColor);
+		properties.SetColor("_SpecColor", startSpecularColor);
+		properties.SetColor("_EmissionColor", startEmissionColor);
+		starRenderer.SetPropertyBlock(properties);
+		transform.localScale = initialScale;
+
+		//Clear previous star links
+		starData.ClearLinks();
+
+		starScorePopup.GetComponent<Renderer>().enabled = false;
+		starScorePopup.GetComponent<Animator>().enabled = false;
+		usesCustomSpeed = false;
+	}
+
 	void Update()
 	{
 		if (gameObject.layer == LayerMask.NameToLayer("Stars"))
@@ -132,15 +141,6 @@ public class StarController : MonoBehaviour
 		}
 	}
 
-	void OnEnable()
-	{
-		properties.SetColor("_Color", startColor);
-		properties.SetColor("_SpecColor", startSpecularColor);
-		properties.SetColor("_EmissionColor", startEmissionColor);
-		starRenderer.SetPropertyBlock(properties);
-		transform.localScale = initialScale;
-	}
-
 	public void UpdateLayerToSendStar()
 	{
 		gameObject.layer = LayerMask.NameToLayer("SentStars");
@@ -171,30 +171,34 @@ public class StarController : MonoBehaviour
 
 	public void StartMovement(float speedModifier = 1)
 	{
-        if (usesCustomSpeed == false)
-        {
-            float speed = starSpeed * speedModifier;
+		Vector3 direction = new Vector3(0, -1, 0);
+		StartMovement(direction, speedModifier);
+	}
 
-            if (GetComponent<Collider>() != null)
-            {
-                GetComponent<Collider>().enabled = true;
-            }
-            GetComponent<Rigidbody>().velocity = new Vector3(0, -1, 0) * speed;
-        }
-        else
-        {
-            //custom speed and direction
-            if (GetComponent<Collider>() != null)
-            {
-                GetComponent<Collider>().enabled = true;
-            }
-            GetComponent<Rigidbody>().velocity = customSpeed * customSpeedDirection;
-        }
+	public void StartMovement(Vector3 direction, float speedModifier = 1)
+	{
+		float speed = starSpeed * speedModifier;
 
-        if (GetComponent<StarPatternManager>() != null)
-        {
-            GetComponent<StarPatternManager>().active = true;
-        }
+		//Enable Collider
+		if (GetComponent<Collider>() != null)
+			GetComponent<Collider>().enabled = true;
+
+		GetComponent<Rigidbody>().velocity = direction * speed;
+
+		//else
+		//{
+		//    //custom speed and direction
+		//    if (GetComponent<Collider>() != null)
+		//    {
+		//        GetComponent<Collider>().enabled = true;
+		//    }
+		//    GetComponent<Rigidbody>().velocity = customSpeed * customSpeedDirection;
+		//}
+
+		//if (GetComponent<StarPatternManager>() != null)
+		//{
+		//    GetComponent<StarPatternManager>().active = true;
+		//}
 	}
 
 	void OnTriggerEnter(Collider coll)

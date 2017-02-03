@@ -10,15 +10,15 @@ public static class GameData
     public const int minimumStars = 3;
 
     //Star Speed
-    public const float minStarSpeed = 1;
-    public const float maxStarSpeed = 3;
+    public const float minStarSpeed = 2;
+    public const float maxStarSpeed = 2;
 
     //Star timing
-	 public static readonly Vector2[] starSpawnTimers = { new Vector2(0.4f, 0.7f), new Vector2(0.4f, 0.6f), new Vector2(0.3f, 0.5f), new Vector2(0.2f, 0.4f), new Vector2(0.1f, 0.3f), new Vector2(0.1f, 0.2f), };
+	 public static readonly Vector2[] starSpawnTimers = { new Vector2(0.5f, 1f), new Vector2(0.5f, 0.9f), new Vector2(0.4f, 0.8f), new Vector2(0.4f, 0.7f), new Vector2(0.3f, 0.6f), new Vector2(0.3f, 0.5f), };
 
     //Star spawn
     public const float fieldSize = 4;
-    public const float starSize = .5f;
+    public const float starSize = 0.65f;
     public const float starSpawnY = 8;//15;
 
     //Comet parameters

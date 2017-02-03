@@ -90,8 +90,8 @@ public class StarPatternManager : MonoBehaviour {
         }
         StartMovement(moveSpeed);
 
-        ActiveStars = GameController.GetComponent<StarManager>().ActiveStars;
-        InactiveStars = GameController.GetComponent<StarManager>().InactiveStars;
+        //ActiveStars = GameController.GetComponent<StarManager>().ActiveStars;
+        //InactiveStars = GameController.GetComponent<StarManager>().InactiveStars;
 	}
 	
 	// Update is called once per frame
